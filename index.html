@@ -54,7 +54,7 @@
         }
         .hero-section {
             text-align: center;
-            padding: 40px 20px;
+            padding: 20px 20px 40px 20px;
         }
         .hero-section h1 {
             font-size: 36px;
@@ -65,6 +65,13 @@
             color: #aaa;
             max-width: 600px;
             margin: 0 auto;
+        }
+        .promo-preview {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
         }
         .shop-controls {
             display: flex;
@@ -94,6 +101,7 @@
             border-radius: 8px;
             width: 220px;
             text-align: center;
+            position: relative;
         }
         .product-card img {
             width: 100%;
@@ -134,6 +142,15 @@
         button:hover {
             background-color: #ff6b81;
         }
+        .btn-delete {
+            background-color: #ff3838;
+            margin-top: 5px;
+            font-size: 11px;
+            padding: 5px 10px;
+        }
+        .btn-delete:hover {
+            background-color: #ff4d4d;
+        }
         .admin-box, .settings-card {
             background-color: #1e1e1e;
             border: 1px solid #333;
@@ -152,7 +169,10 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
-        .coupon-badge {
+        .coupon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background: #2a2a2a;
             border-left: 4px solid #ff4757;
             padding: 10px;
@@ -182,6 +202,11 @@
         <div class="hero-section">
             <h1>Bienvenue sur ARKBERN SHOP</h1>
             <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires de qualité. Simple, rapide et sécurisé !</p>
+            
+            <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
+            <div class="promo-preview" id="promoGrid">
+                <!-- Les articles en promo s'afficheront ici automatiquement -->
+            </div>
         </div>
     </section>
 
@@ -189,20 +214,29 @@
     <section id="shop" class="page-content">
         <h2 style="text-align:center;">Notre Boutique</h2>
 
-        <!-- Espace Admin protégé (visible uniquement si connecté en admin) -->
-        <div id="adminContainer" style="display: none;" class="admin-box">
-            <h3>➕ Ajouter un nouvel article (Espace Admin)</h3>
-            <input type="text" id="pName" placeholder="Nom de l'article">
-            <input type="number" id="pPrice" placeholder="Prix (€)">
-            <select id="pCategory">
-                <option value="electronique">Électronique</option>
-                <option value="vetement">Vêtements</option>
-                <option value="accessoire">Accessoires</option>
-            </select>
-            <textarea id="pDesc" placeholder="Description de l'article"></textarea>
-            <label style="font-size:13px; color:#aaa;">Image de l'article :</label>
-            <input type="file" id="pImage" accept="image/*">
-            <button onclick="addProduct()">Publier l'article</button>
+        <!-- Espace Admin protégé -->
+        <div id="adminContainer" style="display: none;">
+            <div class="admin-box">
+                <h3>➕ Ajouter un nouvel article</h3>
+                <input type="text" id="pName" placeholder="Nom de l'article">
+                <input type="number" id="pPrice" placeholder="Prix (€)">
+                <select id="pCategory">
+                    <option value="electronique">Électronique</option>
+                    <option value="vetement">Vêtements</option>
+                    <option value="accessoire">Accessoires</option>
+                </select>
+                <textarea id="pDesc" placeholder="Description de l'article"></textarea>
+                <label style="font-size:13px; color:#aaa;">Image de l'article :</label>
+                <input type="file" id="pImage" accept="image/*">
+                <button onclick="addProduct()">Publier l'article</button>
+            </div>
+
+            <div class="admin-box">
+                <h3>🎟️ Gestion des Codes Promo</h3>
+                <input type="text" id="newCouponCode" placeholder="Code (ex: ETE2026)">
+                <input type="text" id="newCouponDesc" placeholder="Description (ex: -15% sur tout)">
+                <button onclick="addCoupon()" style="margin-top: 10px;">Créer un code promo</button>
+            </div>
         </div>
 
         <div class="shop-controls">
@@ -218,13 +252,11 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- PAGE 3 : AIDE -->
+    <!-- PAGE 3 : AIDE (Vidé comme demandé) -->
     <section id="aide" class="page-content">
         <h2>Centre d'Aide</h2>
         <div class="settings-card">
-            <p><strong>Comment commander ?</strong> Choisissez votre article dans la boutique, vérifiez les stocks et contactez-nous directement.</p>
-            <p><strong>Livraison :</strong> Nous livrons partout en <strong>France</strong> sous 48h à 72h.</p>
-            <p><strong>Besoin d'assistance ?</strong> Envoyez-nous un email ou appelez-nous directement.</p>
+            <p style="color: #aaa; text-align: center;">Aucune information pour le moment.</p>
         </div>
     </section>
 
@@ -232,10 +264,18 @@
     <section id="parametres" class="page-content">
         <h2>Paramètres & Compte</h2>
 
+        <!-- BLOC INFORMATIONS DE LA BOUTIQUE (Modifié selon ton image) -->
+        <div class="settings-card">
+            <h3>📍 Informations de la Boutique</h3>
+            <p><strong>Pays :</strong> France <sub>FR</sub></p>
+            <p><strong>Email officiel :</strong> kelanbernard9@gmail.com</p>
+            <p><strong>Téléphone :</strong> 07 80 13 01 72</p>
+        </div>
+
         <!-- SECTION CONNEXION / INSCRIPTION -->
         <div class="settings-card" id="authSection">
             <h3 id="authTitle">🔐 Connexion ou Inscription</h3>
-            <p id="authDesc" style="font-size: 13px; color: #aaa;">Connecte-toi ou crée un compte pour gérer ton profil. (Si tu mets ton email admin, tu pourras poster des articles).</p>
+            <p id="authDesc" style="font-size: 13px; color: #aaa;">Connecte-toi ou crée un compte pour gérer ton profil. (Si tu mets ton email admin, tu auras accès aux outils de gestion).</p>
             
             <input type="email" id="userEmailInput" placeholder="Ton adresse email">
             <input type="password" id="userPassInput" placeholder="Ton mot de passe">
@@ -247,19 +287,12 @@
             <p id="authMsg" style="font-size: 13px; margin-top: 10px;"></p>
         </div>
 
-        <!-- SECTION PROFILE (Affichée une fois connecté) -->
+        <!-- SECTION PROFIL -->
         <div class="settings-card" id="profileSection" style="display: none;">
             <h3>👤 Mon Profil</h3>
             <p><strong>Email :</strong> <span id="profileEmail" style="color: #ff4757;"></span></p>
             <p><strong>Statut :</strong> <span id="profileRole" style="font-weight: bold;"></span></p>
             <button onclick="handleLogout()" style="background-color: #333; margin-top: 10px;">Se déconnecter</button>
-        </div>
-        
-        <div class="settings-card">
-            <h3>📍 Informations de la Boutique</h3>
-            <p><strong>Pays :</strong> France 🇫🇷</p>
-            <p><strong>Email officiel :</strong> kelanbernard9@gmail.com</p>
-            <p><strong>Téléphone :</strong> 07 80 13 01 72</p>
         </div>
 
         <div class="settings-card">
@@ -284,14 +317,8 @@
             <p id="couponMsg" style="font-size: 13px; margin-top: 10px;"></p>
 
             <h4 style="margin-top: 20px;">Tous les coupons disponibles :</h4>
-            <div class="coupon-badge">
-                <strong>ARKBERN10</strong> : -10% de réduction sur votre première commande !
-            </div>
-            <div class="coupon-badge">
-                <strong>LIVRAISONGRATUITE</strong> : Frais de port offerts dès 30€ d'achat.
-            </div>
-            <div class="coupon-badge">
-                <strong>PROMO20</strong> : -20€ dès 100€ d'achat sur toute la boutique.
+            <div id="couponsListContainer">
+                <!-- Les coupons s'afficheront ici dynamiquement avec option de suppression pour l'admin -->
             </div>
         </div>
     </section>
@@ -303,15 +330,22 @@
             document.getElementById(pageId).classList.add('active');
         }
 
+        // Produits de base
         let products = JSON.parse(localStorage.getItem('arkbern_products')) || [
-            { name: "Casque Gaming Pro", price: "49.99", category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque" },
-            { name: "Sweat ARKBERN", price: "35.00", category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat" }
+            { id: 1, name: "Casque Gaming Pro", price: "49.99", category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque" },
+            { id: 2, name: "Sweat ARKBERN", price: "35.00", category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat" }
+        ];
+
+        // Coupons de base
+        let coupons = JSON.parse(localStorage.getItem('arkbern_coupons')) || [
+            { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" },
+            { code: "LIVRAISONGRATUITE", desc: "Frais de port offerts dès 30€ d'achat." },
+            { code: "PROMO20", desc: "-20€ dès 100€ d'achat sur toute la boutique." }
         ];
 
         let totalSpentVal = parseFloat(localStorage.getItem('arkbern_spent')) || 0;
         document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
 
-        // Gestion de l'authentification
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
 
         function updateAuthUI() {
@@ -324,7 +358,6 @@
                 profileSection.style.display = 'block';
                 document.getElementById('profileEmail').innerText = currentUser.email;
 
-                // Si c'est ton email admin, on active l'espace pour poster des articles
                 if (currentUser.email === "kelanbernard9@gmail.com") {
                     document.getElementById('profileRole').innerText = "Administrateur (Propriétaire)";
                     document.getElementById('profileRole').style.color = "#2ed573";
@@ -339,6 +372,8 @@
                 profileSection.style.display = 'none';
                 adminBox.style.display = 'none';
             }
+            displayProducts();
+            displayCoupons();
         }
 
         function handleRegister() {
@@ -348,13 +383,12 @@
 
             if (!email || !pass) {
                 msg.style.color = "#ff4757";
-                msg.innerText = "❌ Remplis tous les champs pour créer un compte.";
+                msg.innerText = "❌ Remplis tous les champs.";
                 return;
             }
-
             localStorage.setItem('arkbern_user_account', JSON.stringify({ email, pass }));
             msg.style.color = "#2ed573";
-            msg.innerText = "✔ Compte créé avec succès ! Tu peux te connecter.";
+            msg.innerText = "✔ Compte créé ! Tu peux te connecter.";
         }
 
         function handleLogin() {
@@ -363,7 +397,6 @@
             let msg = document.getElementById('authMsg');
             let savedAccount = JSON.parse(localStorage.getItem('arkbern_user_account'));
 
-            // Autorisation directe si c'est ton email admin, ou si le compte enregistré correspond
             if ((email === "kelanbernard9@gmail.com" && pass.length > 0) || (savedAccount && savedAccount.email === email && savedAccount.pass === pass)) {
                 currentUser = { email };
                 localStorage.setItem('arkbern_current_user', JSON.stringify(currentUser));
@@ -383,16 +416,38 @@
 
         function displayProducts(filteredList = products) {
             let grid = document.getElementById('productsGrid');
+            let promoGrid = document.getElementById('promoGrid');
             grid.innerHTML = "";
+            promoGrid.innerHTML = "";
+
+            let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
+
+            // Affichage dans la boutique
             filteredList.forEach((p) => {
+                let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer</button>` : '';
                 grid.innerHTML += `
-                    <div class="product-card" data-category="${p.category}">
+                    <div class="product-card">
                         <img src="${p.image}" alt="${p.name}">
                         <h3>${p.name}</h3>
                         <p class="category-tag">${p.category.toUpperCase()}</p>
                         <p class="price">${p.price} €</p>
                         <p class="desc">${p.desc}</p>
                         <button onclick="buyItem('${p.name}', ${p.price})">Acheter</button>
+                        ${deleteBtn}
+                    </div>
+                `;
+            });
+
+            // Affichage de 1 à 2 articles en promo sur la page de présentation
+            let promoItems = products.slice(0, 2);
+            promoItems.forEach((p) => {
+                promoGrid.innerHTML += `
+                    <div class="product-card">
+                        <img src="${p.image}" alt="${p.name}">
+                        <h3>${p.name}</h3>
+                        <p class="category-tag">EN PROMO</p>
+                        <p class="price" style="color:#ff4757;">${p.price} €</p>
+                        <button onclick="buyItem('${p.name}', ${p.price})">Profiter de l'offre</button>
                     </div>
                 `;
             });
@@ -406,25 +461,32 @@
             let imageInput = document.getElementById('pImage');
 
             if (!name || !price || !desc) {
-                alert("Veuillez remplir tous les champs !");
+                alert("Remplis tous les champs !");
                 return;
             }
 
+            let newId = Date.now();
             if (imageInput.files && imageInput.files[0]) {
                 let reader = new FileReader();
                 reader.onload = function(e) {
-                    products.push({ name, price, category, desc, image: e.target.result });
+                    products.push({ id: newId, name, price, category, desc, image: e.target.result });
                     localStorage.setItem('arkbern_products', JSON.stringify(products));
                     displayProducts();
                     clearForm();
                 };
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
-                products.push({ name, price, category, desc, image: "https://via.placeholder.com/220x140?text=Article" });
+                products.push({ id: newId, name, price, category, desc, image: "https://via.placeholder.com/220x140?text=Article" });
                 localStorage.setItem('arkbern_products', JSON.stringify(products));
                 displayProducts();
                 clearForm();
             }
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('arkbern_products', JSON.stringify(products));
+            displayProducts();
         }
 
         function clearForm() {
@@ -447,6 +509,58 @@
             displayProducts(filtered);
         }
 
+        // Gestion des Coupons
+        function displayCoupons() {
+            let container = document.getElementById('couponsListContainer');
+            container.innerHTML = "";
+            let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
+
+            coupons.forEach((c, index) => {
+                let deleteAction = isAdmin ? `<button class="btn-delete" onclick="deleteCoupon(${index})">Supprimer</button>` : '';
+                container.innerHTML += `
+                    <div class="coupon-item">
+                        <div><strong>${c.code}</strong> : ${c.desc}</div>
+                        ${deleteAction}
+                    </div>
+                `;
+            });
+        }
+
+        function addCoupon() {
+            let code = document.getElementById('newCouponCode').value.trim().toUpperCase();
+            let desc = document.getElementById('newCouponDesc').value.trim();
+
+            if (!code || !desc) {
+                alert("Remplis le code et la description !");
+                return;
+            }
+            coupons.push({ code, desc });
+            localStorage.setItem('arkbern_coupons', JSON.stringify(coupons));
+            document.getElementById('newCouponCode').value = "";
+            document.getElementById('newCouponDesc').value = "";
+            displayCoupons();
+        }
+
+        function deleteCoupon(index) {
+            coupons.splice(index, 1);
+            localStorage.setItem('arkbern_coupons', JSON.stringify(coupons));
+            displayCoupons();
+        }
+
+        function applyCoupon() {
+            let code = document.getElementById('couponInput').value.trim().toUpperCase();
+            let msg = document.getElementById('couponMsg');
+            let found = coupons.some(c => c.code === code);
+
+            if (found) {
+                msg.style.color = "#2ed573";
+                msg.innerText = "✔ Code '" + code + "' appliqué avec succès !";
+            } else {
+                msg.style.color = "#ff4757";
+                msg.innerText = "❌ Code promo invalide.";
+            }
+        }
+
         function buyItem(name, price) {
             alert("Achat simulé de : " + name);
             totalSpentVal += parseFloat(price);
@@ -461,18 +575,6 @@
             } else {
                 document.getElementById('cardStatus').style.color = "#2ed573";
                 document.getElementById('cardStatus').innerText = "✔ Carte enregistrée avec succès !";
-            }
-        }
-
-        function applyCoupon() {
-            let code = document.getElementById('couponInput').value.trim().toUpperCase();
-            let msg = document.getElementById('couponMsg');
-            if (code === "ARKBERN10" || code === "LIVRAISONGRATUITE" || code === "PROMO20") {
-                msg.style.color = "#2ed573";
-                msg.innerText = "✔ Code '" + code + "' appliqué avec succès !";
-            } else {
-                msg.style.color = "#ff4757";
-                msg.innerText = "❌ Code promo invalide ou expiré.";
             }
         }
 
