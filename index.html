@@ -18,6 +18,7 @@
             font-weight: bold;
             padding: 8px 0;
             font-size: 14px;
+            text-align: center;
         }
         .navbar {
             display: flex;
@@ -160,14 +161,26 @@
         .btn-delete:hover {
             background-color: #ff4d4d;
         }
-        .admin-box, .settings-card {
+        .btn-fav {
+            background-color: transparent;
+            border: 1px solid #ff4757;
+            color: #ff4757;
+            margin-top: 5px;
+            font-size: 11px;
+            padding: 4px 10px;
+        }
+        .btn-fav.active {
+            background-color: #ff4757;
+            color: white;
+        }
+        .admin-box, .settings-card, .cart-card {
             background-color: #1e1e1e;
             border: 1px solid #333;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 25px;
         }
-        .admin-box input, .admin-box select, .admin-box textarea, .settings-card input {
+        .admin-box input, .admin-box select, .admin-box textarea, .settings-card input, .cart-card select {
             display: block;
             width: 100%;
             margin: 10px 0;
@@ -196,12 +209,19 @@
             text-decoration: underline;
             word-break: break-all;
         }
+        .cart-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding: 10px 0;
+        }
     </style>
 </head>
 <body>
 
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé Stripe - France 🇫🇷 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement sécurisé en 1x ou 2x - France 🇫🇷 🔥</marquee>
     </div>
 
     <header class="navbar">
@@ -209,6 +229,7 @@
         <nav>
             <a onclick="switchPage('presentation')">Présentation</a>
             <a onclick="switchPage('shop')">Boutique</a>
+            <a onclick="switchPage('panier')">Panier / Payer tout</a>
             <a onclick="switchPage('aide')">Aide</a>
             <a onclick="switchPage('parametres')">Paramètres & Compte</a>
         </nav>
@@ -218,7 +239,7 @@
     <section id="presentation" class="page-content active">
         <div class="hero-section">
             <h1>Bienvenue sur ARKBERN SHOP</h1>
-            <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires de qualité. Simple, rapide et sécurisé ![cite: 2]</p>
+            <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires. Simple, rapide et sécurisé[cite: 2] !</p>
             
             <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
             <div class="promo-preview" id="promoGrid"></div>
@@ -267,6 +288,7 @@
             <input type="text" id="searchBar" placeholder="Rechercher un objet..." onkeyup="filterProducts()">
             <select id="categoryFilter" onchange="filterProducts()">
                 <option value="all">Toutes les catégories</option>
+                <option value="favoris">❤️ Mes Favoris</option>
                 <option value="electronique">Électronique</option>
                 <option value="vetement">Vêtements</option>
                 <option value="accessoire">Accessoires</option>
@@ -276,15 +298,36 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- PAGE 3 : AIDE -->
-    <section id="aide" class="page-content">
-        <h2>Centre d'Aide</h2>
-        <div class="settings-card">
-            <p style="color: #aaa; text-align: center;">Aucune information pour le moment.</p>
+    <!-- PAGE 3 : PANIER & PAIEMENT GLOBAL -->
+    <section id="panier" class="page-content">
+        <h2>Mon Panier & Paiement Global</h2>
+        <div class="cart-card">
+            <h3>🛒 Articles sélectionnés</h3>
+            <div id="cartItemsContainer">
+                <p style="color: #aaa; text-align: center;">Votre panier est vide.</p>
+            </div>
+            <hr style="border-color: #444; margin: 20px 0;">
+            <p style="font-size: 18px;">Total du panier : <strong id="cartTotalPrice" style="color: #ff4757;">0.00 €</strong></p>
+
+            <h4 style="margin-top: 20px;">Mode de paiement :</h4>
+            <select id="paymentInstallments">
+                <option value="1">Payer en 1 fois (Comptant)</option>
+                <option value="2">Payer en 2 fois (Sans frais)</option>
+            </select>
+
+            <button onclick="payEntireCart()" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 16px;">Payer tout le panier via Stripe</button>
         </div>
     </section>
 
-    <!-- PAGE 4 : PARAMETRES & COMPTE -->
+    <!-- PAGE 4 : AIDE -->
+    <section id="aide" class="page-content">
+        <h2>Centre d'Aide</h2>
+        <div class="settings-card">
+            <p style="color: #aaa; text-align: center;">Pour toute question, contactez-nous à kelanbernard9@gmail.com[cite: 2].</p>
+        </div>
+    </section>
+
+    <!-- PAGE 5 : PARAMETRES & COMPTE -->
     <section id="parametres" class="page-content">
         <h2>Paramètres & Compte</h2>
 
@@ -298,8 +341,6 @@
         <!-- SECTION CONNEXION / INSCRIPTION -->
         <div class="settings-card" id="authSection">
             <h3 id="authTitle">🔐 Connexion ou Inscription</h3>
-            <p id="authDesc" style="font-size: 13px; color: #aaa;">Connecte-toi une seule fois, le site retiendra ton compte.</p>
-            
             <input type="email" id="userEmailInput" placeholder="Ton adresse email">
             <input type="password" id="userPassInput" placeholder="Ton mot de passe">
             
@@ -361,6 +402,9 @@
             { id: 2, name: "Sweat ARKBERN", price: 35.00, finalPrice: 28.00, category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat", stripeLink: "https://buy.stripe.com/test_sweat_example", hasPromo: true, promoText: "-20%" }
         ];
 
+        let favorites = JSON.parse(localStorage.getItem('arkbern_favorites')) || [];
+        let cart = JSON.parse(localStorage.getItem('arkbern_cart')) || [];
+
         let coupons = JSON.parse(localStorage.getItem('arkbern_coupons')) || [
             { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" },
             { code: "LIVRAISONGRATUITE", desc: "Frais de port offerts dès 30€ d'achat." }
@@ -369,7 +413,6 @@
         let totalSpentVal = parseFloat(localStorage.getItem('arkbern_spent')) || 0;
         document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
 
-        // Mémorisation de la connexion[cite: 2]
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
 
         function updateAuthUI() {
@@ -398,6 +441,7 @@
             }
             displayProducts();
             displayCoupons();
+            displayCart();
             loadCardInfo();
         }
 
@@ -439,7 +483,83 @@
             updateAuthUI();
         }
 
-        // Affichage des produits & promos sur la page de présentation et boutique[cite: 2]
+        // Gestion des Favoris
+        function toggleFavorite(id) {
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem('arkbern_favorites', JSON.stringify(favorites));
+            filterProducts();
+        }
+
+        // Gestion du Panier Global
+        function addToCart(id) {
+            let item = products.find(p => p.id === id);
+            if (item) {
+                cart.push(item);
+                localStorage.setItem('arkbern_cart', JSON.stringify(cart));
+                displayCart();
+                alert(`✔ ${item.name} a été ajouté au panier pour paiement global !`);
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('arkbern_cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function displayCart() {
+            let container = document.getElementById('cartItemsContainer');
+            let totalContainer = document.getElementById('cartTotalPrice');
+            container.innerHTML = "";
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p style="color: #aaa; text-align: center;">Votre panier est vide.</p>`;
+                totalContainer.innerText = "0.00 €";
+                return;
+            }
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.finalPrice;
+                container.innerHTML += `
+                    <div class="cart-item-row">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <span style="color: #2ed573; font-size: 14px;">${item.finalPrice} €</span>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="btn-delete" style="margin:0;">Retirer</button>
+                    </div>
+                `;
+            });
+            totalContainer.innerText = total.toFixed(2) + " €";
+        }
+
+        function payEntireCart() {
+            if (cart.length === 0) {
+                alert("Votre panier est vide !");
+                return;
+            }
+
+            let total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
+            let installments = document.getElementById('paymentInstallments').value;
+
+            totalSpentVal += total;
+            localStorage.setItem('arkbern_spent', totalSpentVal);
+            document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
+
+            let message = installments === "2" 
+                ? `Redirection Stripe pour le paiement global de ${total.toFixed(2)} € (Divisé en 2 fois).`
+                : `Redirection Stripe pour le paiement global de ${total.toFixed(2)} € (En 1 fois).`;
+
+            alert(message);
+            window.open(products[0].stripeLink, '_blank');
+        }
+
+        // Affichage des produits & promos[cite: 2]
         function displayProducts(filteredList = products) {
             let grid = document.getElementById('productsGrid');
             let promoGrid = document.getElementById('promoGrid');
@@ -452,12 +572,13 @@
                 let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer l'article</button>` : '';
                 let stripeDisplay = isAdmin ? `<a class="stripe-link" href="${p.stripeLink}" target="_blank">Lien Stripe (Admin)</a>` : '';
                 
-                let priceHTML = "";
-                if (p.hasPromo) {
-                    priceHTML = `<div class="price-container"><span class="old-price">${p.price} €</span><span class="price">${p.finalPrice} €</span></div>`;
-                } else {
-                    priceHTML = `<div class="price-container"><span class="price">${p.price} €</span></div>`;
-                }
+                let isFav = favorites.includes(p.id);
+                let favBtnClass = isFav ? "btn-fav active" : "btn-fav";
+                let favBtnText = isFav ? "❤️ Dans les favoris" : "🤍 Ajouter aux favoris";
+
+                let priceHTML = p.hasPromo 
+                    ? `<div class="price-container"><span class="old-price">${p.price} €</span><span class="price">${p.finalPrice} €</span></div>`
+                    : `<div class="price-container"><span class="price">${p.price} €</span></div>`;
 
                 let cardHTML = `
                     <div class="product-card">
@@ -466,7 +587,8 @@
                         <p class="category-tag">${p.category.toUpperCase()}</p>
                         ${priceHTML}
                         <p class="desc">${p.desc}</p>
-                        <button onclick="buyItem('${p.name}', ${p.finalPrice}, '${p.stripeLink}')">Payer via Stripe</button>
+                        <button onclick="addToCart(${p.id})">Ajouter au panier</button>
+                        <button class="${favBtnClass}" onclick="toggleFavorite(${p.id})">${favBtnText}</button>
                         ${stripeDisplay}
                         ${deleteBtn}
                     </div>
@@ -474,7 +596,7 @@
                 grid.innerHTML += cardHTML;
             });
 
-            // Affichage des articles en promo sur la page de présentation[cite: 2]
+            // Affichage des promos sur l'accueil[cite: 2]
             let promos = products.filter(p => p.hasPromo);
             if (promos.length === 0) promos = products.slice(0, 2);
             
@@ -488,13 +610,12 @@
                             <span class="old-price">${p.price} €</span>
                             <span class="price" style="color:#ff4757;">${p.finalPrice} €</span>
                         </div>
-                        <button onclick="buyItem('${p.name}', ${p.finalPrice}, '${p.stripeLink}')">Profiter de l'offre</button>
+                        <button onclick="addToCart(${p.id})">Ajouter au panier</button>
                     </div>
                 `;
             });
         }
 
-        // Publication d'un article avec génération automatique de lien Stripe simulé[cite: 2]
         function addProduct() {
             let name = document.getElementById('pName').value;
             let price = parseFloat(document.getElementById('pPrice').value);
@@ -525,7 +646,6 @@
             }
 
             finalPrice = parseFloat(finalPrice.toFixed(2));
-
             let uniqueId = Date.now();
             let autoStripeLink = `https://buy.stripe.com/test_arkbern_${uniqueId}`;
 
@@ -559,7 +679,9 @@
 
         function deleteProduct(id) {
             products = products.filter(p => p.id !== id);
+            favorites = favorites.filter(favId => favId !== id);
             localStorage.setItem('arkbern_products', JSON.stringify(products));
+            localStorage.setItem('arkbern_favorites', JSON.stringify(favorites));
             displayProducts();
         }
 
@@ -578,14 +700,19 @@
 
             let filtered = products.filter(p => {
                 let matchesSearch = p.name.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
-                let matchesCat = (catVal === 'all' || p.category === catVal);
+                let matchesCat = true;
+
+                if (catVal === 'favoris') {
+                    matchesCat = favorites.includes(p.id);
+                } else if (catVal !== 'all') {
+                    matchesCat = (p.category === catVal);
+                }
                 return matchesSearch && matchesCat;
             });
 
             displayProducts(filtered);
         }
 
-        // Gestion des Cartes Bancaires (Enregistrement et Suppression persistante)[cite: 2]
         function saveCard() {
             let name = document.getElementById('cardName').value.trim();
             let number = document.getElementById('cardNumber').value.trim();
@@ -627,16 +754,6 @@
             }
         }
 
-        // Achat et redirection vers le lien de paiement Stripe[cite: 2]
-        function buyItem(name, price, stripeLink) {
-            totalSpentVal += parseFloat(price);
-            localStorage.setItem('arkbern_spent', totalSpentVal);
-            document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
-
-            window.open(stripeLink, '_blank');
-        }
-
-        // Gestion des Coupons[cite: 2]
         function displayCoupons() {
             let container = document.getElementById('couponsListContainer');
             container.innerHTML = "";
