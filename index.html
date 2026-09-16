@@ -209,7 +209,7 @@
             padding: 10px 0;
         }
         
-        /* STYLE DU VRAI BORDEREAU PRO POUR IMPRESSION */
+        /* STYLE DU BORDEREAU PRO POUR IMPRESSION */
         #printArea {
             display: none;
         }
@@ -263,13 +263,18 @@
 
         <div id="adminContainer" style="display: none;">
             <div class="admin-box" style="border-color: #2ed573;">
-                <h3>👑 TRESORERIE ADMIN - RECEPTION DE L'ARGENT</h3>
-                <p style="font-size: 13px; color: #aaa;">Voici l'argent total récolté sur le site grâce aux achats de vos clients :</p>
+                <h3>👑 TRESORERIE ADMIN - VIREMENT BANCAIRE</h3>
+                <p style="font-size: 13px; color: #aaa;">Argent disponible dans la cagnotte :</p>
                 <div style="font-size: 24px; font-weight: bold; color: #2ed573; margin: 10px 0;" id="adminTotalEarnings">0.00 €</div>
+                
                 <input type="text" id="adminIbanInput" placeholder="Ton IBAN (ex: FR76 XXXX XXXX XXXX XXXX XXXX XXX)">
                 <input type="text" id="adminNameInput" placeholder="Nom du titulaire (ex: Bernard Kelan)">
-                <button onclick="saveAdminBanking()" style="background-color: #2ed573; color: black; font-weight: bold;">Enregistrer mes coordonnées bancaires 💶</button>
-                <button onclick="resetAdminEarnings()" style="background-color: #ff3838; color: white; margin-top: 10px; font-size: 12px;">Vider / Retirer l'argent de la cagnotte</button>
+                
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="saveAdminBanking()" style="background-color: #2ed573; color: black; font-weight: bold; flex: 1;">Enregistrer l'IBAN 💶</button>
+                    <button onclick="transferToMyBank()" style="background-color: #0984e3; color: white; font-weight: bold; flex: 1;">Envoyer l'argent sur mon compte 🚀</button>
+                </div>
+                <button onclick="resetAdminEarnings()" style="background-color: #ff3838; color: white; margin-top: 10px; width: 100%; font-size: 12px;">Remettre la cagnotte à 0 €</button>
                 <p id="adminBankStatus" style="font-size: 13px; margin-top: 8px; color: #2ed573;"></p>
             </div>
 
@@ -428,7 +433,7 @@
         </div>
     </section>
 
-    <!-- BORDEREAU D'EXPEDITION PRO POUR IMPRESSION -->
+    <!-- BORDEREAU D'EXPEDITION PRO AVEC DEUX QR CODES -->
     <div id="printArea" style="background: white; color: black; padding: 25px; font-family: Arial, sans-serif; width: 100%; max-width: 600px; margin: 0 auto; border: 2px dashed #000;">
         <div style="display: flex; justify-content: space-between; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px;">
             <div>
@@ -441,10 +446,16 @@
             </div>
         </div>
 
-        <!-- CODE BARRES VISUEL -->
-        <div style="text-align: center; background: #f4f4f4; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc;">
-            <div style="font-family: monospace; font-size: 26px; letter-spacing: 4px; font-weight: bold;">||| | |||| || ||||| || ||||</div>
-            <div style="font-size: 11px; margin-top: 5px; font-weight: bold;">REF SUIVI : FR-80000-ARKBERN-RELAY</div>
+        <!-- BLOC QR CODES (SITE + SUIVI COLIS) -->
+        <div style="display: flex; justify-content: space-around; background: #f9f9f9; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; text-align: center;">
+            <div>
+                <img id="qrCodeSite" src="" alt="QR Site" style="width: 80px; height: 80px;">
+                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour aller sur le site</div>
+            </div>
+            <div>
+                <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 80px; height: 80px;">
+                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour Mondial Relay</div>
+            </div>
         </div>
 
         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
@@ -471,7 +482,7 @@
             <ul id="printItemsList" style="margin: 0; padding-left: 20px; font-size: 12px;"></ul>
         </div>
 
-        <div style="text-align: center; margin-top: 25px; font-size: 11px; border-top: 1px dashed #000; padding-top: 8px;">
+        <div style="text-align: center; margin-top: 20px; font-size: 11px; border-top: 1px dashed #000; padding-top: 8px;">
             À imprimer et coller visiblement sur le dessus du colis avant dépôt en Point Relais. Merci !
         </div>
     </div>
@@ -564,6 +575,26 @@
             if (earningsElement) {
                 earningsElement.innerText = adminEarningsVal.toFixed(2) + " €";
             }
+        }
+
+        function transferToMyBank() {
+            let saved = JSON.parse(localStorage.getItem('arkbern_admin_banking'));
+            if (!saved || !saved.iban) {
+                alert("❌ Veuillez d'abord enregistrer votre IBAN dans le champ ci-dessus avant d'effectuer le virement.");
+                return;
+            }
+
+            if (adminEarningsVal <= 0) {
+                alert("❌ Il n'y a aucun fond à transférer dans la cagnotte pour le moment.");
+                return;
+            }
+
+            let amountToTransfer = adminEarningsVal;
+            adminEarningsVal = 0;
+            localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
+            updateAdminEarningsDisplay();
+
+            alert(`🚀 Virement de ${amountToTransfer.toFixed(2)} € émis avec succès vers votre compte bancaire (${saved.iban}) ! L'argent arrivera sous peu.`);
         }
 
         function resetAdminEarnings() {
@@ -745,7 +776,7 @@
             displayCart();
             displayOrders();
 
-            alert(`🎉 Paiement validé ! ${total.toFixed(2)} € ont été débités de votre simulation et ajoutés à la trésorerie de l'administrateur.`);
+            alert(`🎉 Paiement validé ! ${total.toFixed(2)} € ont été ajoutés à la trésorerie de la boutique.`);
             switchPage('suivi');
         }
 
@@ -828,6 +859,12 @@
             ord.items.forEach(i => {
                 itemsListUl.innerHTML += `<li>${i.name} - ${i.finalPrice} €</li>`;
             });
+
+            let siteUrl = window.location.href.split('#')[0];
+            let mondialRelayUrl = "https://www.mondialrelay.fr/suivi-de-colis/";
+
+            document.getElementById('qrCodeSite').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(siteUrl)}`;
+            document.getElementById('qrCodeRelay').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(mondialRelayUrl)}`;
 
             window.print();
         }
