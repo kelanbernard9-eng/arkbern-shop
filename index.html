@@ -5,693 +5,395 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARKBERN SHOP</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .top-banner {
-            background-color: #ff4757;
+
+        body {
+            background-color: #0f1015;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Announcement Bar */
+        .announcement-bar {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
             color: white;
-            font-weight: bold;
-            padding: 8px 0;
+            text-align: center;
+            padding: 8px;
             font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
+
+        /* Navbar */
         .navbar {
+            background-color: #181a20;
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #1e1e1e;
-            padding: 15px 40px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #2f3336;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .navbar .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ff4757;
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .navbar nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .navbar nav a:hover {
-            color: #ff4757;
-        }
-        .page-content {
-            display: none;
-            padding: 40px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .page-content.active {
-            display: block;
-        }
-        .hero-section {
-            text-align: center;
-            padding: 20px 20px 40px 20px;
-        }
-        .hero-section h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        .hero-section p {
-            font-size: 18px;
-            color: #aaa;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .promo-preview {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-        .shop-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        .shop-controls input, .shop-controls select {
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #1e1e1e;
-            color: white;
-            font-size: 14px;
-        }
-        .products-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .product-card {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            padding: 15px;
-            border-radius: 8px;
-            width: 220px;
-            text-align: center;
-            position: relative;
-        }
-        .product-card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .product-card h3 {
-            margin: 10px 0 5px 0;
-            font-size: 18px;
-        }
-        .category-tag {
-            font-size: 12px;
-            color: #ff4757;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .price-container {
-            margin-bottom: 10px;
-        }
-        .old-price {
-            text-decoration: line-through;
-            color: #888;
-            font-size: 14px;
-            margin-right: 5px;
-        }
-        .price {
+
+        .navbar nav button {
+            background: none;
+            border: none;
+            color: #b0b3b8;
             font-size: 16px;
-            font-weight: bold;
-            color: #2ed573;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 25px;
+            transition: color 0.2s;
         }
-        .desc {
-            font-size: 13px;
-            color: #bbb;
+
+        .navbar nav button:hover, .navbar nav button.active {
+            color: #ffffff;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero / Presentation Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1f2229 0%, #15181e 100%);
+            border-radius: 16px;
+            border: 1px solid #2f3336;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
             margin-bottom: 15px;
+            font-weight: 800;
         }
-        button {
-            background-color: #ff4757;
+
+        .hero p {
+            color: #9ca3af;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            line-height: 1.5;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
             color: white;
             border: none;
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 5px;
+            padding: 12px 30px;
+            font-size: 16px;
             font-weight: bold;
-        }
-        button:hover {
-            background-color: #ff6b81;
-        }
-        .btn-delete {
-            background-color: #ff3838;
-            margin-top: 5px;
-            font-size: 11px;
-            padding: 5px 10px;
-        }
-        .btn-delete:hover {
-            background-color: #ff4d4d;
-        }
-        .admin-box, .settings-card {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            padding: 20px;
             border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Shop Grid */
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 25px;
+            border-left: 4px solid #ff416c;
+            padding-left: 12px;
         }
-        .admin-box input, .admin-box select, .admin-box textarea, .settings-card input {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            background: #222;
-            border: 1px solid #444;
-            color: white;
-            border-radius: 5px;
-            box-sizing: border-box;
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
-        .coupon-item {
+
+        .card {
+            background-color: #181a20;
+            border: 1px solid #2f3336;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #ff416c;
+        }
+
+        .card-img {
+            height: 160px;
+            background: #262930;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #2a2a2a;
-            border-left: 4px solid #ff4757;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+            margin-top: 15px;
         }
-        .stripe-link {
-            display: block;
-            margin-top: 8px;
-            font-size: 11px;
-            color: #70a1ff;
-            text-decoration: underline;
-            word-break: break-all;
+
+        .price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .btn-card {
+            background-color: #2f3336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-card:hover {
+            background-color: #ff416c;
+        }
+
+        /* Help & Settings Sections */
+        .info-box {
+            background-color: #181a20;
+            border: 1px solid #2f3336;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #f3f4f6;
+        }
+
+        .info-box p {
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #2f3336;
+            background-color: #121318;
+            margin-top: auto;
         }
     </style>
 </head>
 <body>
 
-    <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé Stripe - France 🇫🇷 🔥</marquee>
+    <div class="announcement-bar">
+        🔥 Bienvenue sur ARKBERN SHOP — Profitez de nos offres exclusives !
     </div>
 
     <header class="navbar">
         <div class="logo">ARKBERN SHOP</div>
         <nav>
-            <a onclick="switchPage('presentation')">Présentation</a>
-            <a onclick="switchPage('shop')">Boutique</a>
-            <a onclick="switchPage('aide')">Aide</a>
-            <a onclick="switchPage('parametres')">Paramètres & Compte</a>
+            <button type="button" id="btn-presentation" onclick="switchPage('presentation')" class="active">Présentation</button>
+            <button type="button" id="btn-shop" onclick="switchPage('shop')">Boutique</button>
+            <button type="button" id="btn-aide" onclick="switchPage('aide')">Aide</button>
+            <button type="button" id="btn-parametres" onclick="switchPage('parametres')">Paramètres & Compte</button>
         </nav>
     </header>
 
-    <!-- PAGE 1 : PRESENTATION -->
-    <section id="presentation" class="page-content active">
-        <div class="hero-section">
-            <h1>Bienvenue sur ARKBERN SHOP</h1>
-            <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires de qualité. Simple, rapide et sécurisé !</p>
+    <div class="container">
+        <!-- Page Présentation -->
+        <section id="presentation" class="page active">
+            <div class="hero">
+                <h1>Bienvenue sur ARKBERN SHOP</h1>
+                <p>Découvrez notre sélection de produits de qualité, configurés et prêts pour vous accompagner.</p>
+                <button type="button" class="btn-primary" onclick="switchPage('shop')">Voir la boutique</button>
+            </div>
             
-            <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
-            <div class="promo-preview" id="promoGrid"></div>
-        </div>
-    </section>
-
-    <!-- PAGE 2 : BOUTIQUE -->
-    <section id="shop" class="page-content">
-        <h2 style="text-align:center;">Notre Boutique</h2>
-
-        <!-- Espace Admin protégé -->
-        <div id="adminContainer" style="display: none;">
-            <div class="admin-box">
-                <h3>➕ Ajouter un nouvel article (Génération Stripe automatique)</h3>
-                <input type="text" id="pName" placeholder="Nom de l'article">
-                <input type="number" id="pPrice" placeholder="Prix initial (€)">
-                <select id="pCategory">
-                    <option value="electronique">Électronique</option>
-                    <option value="vetement">Vêtements</option>
-                    <option value="accessoire">Accessoires</option>
-                </select>
-                <textarea id="pDesc" placeholder="Description de l'article"></textarea>
-                
-                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Options de Promotion (Facultatif) :</label>
-                <select id="promoType">
-                    <option value="none">Aucune promotion</option>
-                    <option value="percent">Réduction en Pourcentage (%)</option>
-                    <option value="euro">Réduction en Euros (€)</option>
-                </select>
-                <input type="number" id="promoValue" placeholder="Valeur de la promo (ex: 20 pour 20% ou 10 pour 10€)">
-
-                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Image de l'article :</label>
-                <input type="file" id="pImage" accept="image/*">
-                <button onclick="addProduct()">Publier l'article et créer le lien Stripe</button>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-img">Produit Phare</div>
+                    <div class="card-body">
+                        <div class="card-title">Qualité & Fiabilité</div>
+                        <div class="card-desc">Tous nos articles sont rigoureusement sélectionnés pour vous garantir la meilleure expérience.</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">Support Rapide</div>
+                    <div class="card-body">
+                        <div class="card-title">À votre écoute</div>
+                        <div class="card-desc">Une question sur une commande ou un article ? Notre équipe vous répond rapidement.</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">Paiement Sécurisé</div>
+                    <div class="card-body">
+                        <div class="card-title">Transactions sûres</div>
+                        <div class="card-desc">Profitez de solutions de paiement entièrement sécurisées et rapides.</div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="admin-box">
-                <h3>🎟️ Gestion des Codes Promo</h3>
-                <input type="text" id="newCouponCode" placeholder="Code (ex: ETE2026)">
-                <input type="text" id="newCouponDesc" placeholder="Description (ex: -15% sur tout)">
-                <button onclick="addCoupon()" style="margin-top: 10px;">Créer un code promo</button>
+        <!-- Page Boutique -->
+        <section id="shop" class="page">
+            <div class="section-title">Notre Catalogue</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-img">Article #1</div>
+                    <div class="card-body">
+                        <div class="card-title">Article Populaire 1</div>
+                        <div class="card-desc">Description courte de l'article mis en vente dans la boutique ARKBERN SHOP.</div>
+                        <div class="card-footer">
+                            <span class="price">9,99 €</span>
+                            <button type="button" class="btn-card" onclick="alert('Article ajouté au panier !')">Acheter</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">Article #2</div>
+                    <div class="card-body">
+                        <div class="card-title">Article Populaire 2</div>
+                        <div class="card-desc">Description courte de l'article mis en vente dans la boutique ARKBERN SHOP.</div>
+                        <div class="card-footer">
+                            <span class="price">14,99 €</span>
+                            <button type="button" class="btn-card" onclick="alert('Article ajouté au panier !')">Acheter</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">Article #3</div>
+                    <div class="card-body">
+                        <div class="card-title">Article Populaire 3</div>
+                        <div class="card-desc">Description courte de l'article mis en vente dans la boutique ARKBERN SHOP.</div>
+                        <div class="card-footer">
+                            <span class="price">19,99 €</span>
+                            <button type="button" class="btn-card" onclick="alert('Article ajouté au panier !')">Acheter</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="shop-controls">
-            <input type="text" id="searchBar" placeholder="Rechercher un objet..." onkeyup="filterProducts()">
-            <select id="categoryFilter" onchange="filterProducts()">
-                <option value="all">Toutes les catégories</option>
-                <option value="electronique">Électronique</option>
-                <option value="vetement">Vêtements</option>
-                <option value="accessoire">Accessoires</option>
-            </select>
-        </div>
-
-        <div class="products-grid" id="productsGrid"></div>
-    </section>
-
-    <!-- PAGE 3 : AIDE -->
-    <section id="aide" class="page-content">
-        <h2>Centre d'Aide</h2>
-        <div class="settings-card">
-            <p style="color: #aaa; text-align: center;">Aucune information pour le moment.</p>
-        </div>
-    </section>
-
-    <!-- PAGE 4 : PARAMETRES & COMPTE -->
-    <section id="parametres" class="page-content">
-        <h2>Paramètres & Compte</h2>
-
-        <div class="settings-card">
-            <h3>📍 Informations de la Boutique</h3>
-            <p><strong>Pays :</strong> France <sub>FR</sub></p>
-            <p><strong>Email officiel :</strong> kelanbernard9@gmail.com</p>
-            <p><strong>Téléphone :</strong> 07 80 13 01 72</p>
-        </div>
-
-        <!-- SECTION CONNEXION / INSCRIPTION -->
-        <div class="settings-card" id="authSection">
-            <h3 id="authTitle">🔐 Connexion ou Inscription</h3>
-            <p id="authDesc" style="font-size: 13px; color: #aaa;">Connecte-toi une seule fois, le site retiendra ton compte.</p>
-            
-            <input type="email" id="userEmailInput" placeholder="Ton adresse email">
-            <input type="password" id="userPassInput" placeholder="Ton mot de passe">
-            
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="handleLogin()">Se connecter</button>
-                <button onclick="handleRegister()" style="background-color: #333;">Créer un compte</button>
+        <!-- Page Aide -->
+        <section id="aide" class="page">
+            <div class="section-title">Centre d'Aide & Support</div>
+            <div class="info-box">
+                <h3>Comment passer commande ?</h3>
+                <p>Rendez-vous dans l'onglet Boutique, choisissez votre article et cliquez sur le bouton d'achat pour finaliser.</p>
             </div>
-            <p id="authMsg" style="font-size: 13px; margin-top: 10px;"></p>
-        </div>
-
-        <!-- SECTION PROFIL -->
-        <div class="settings-card" id="profileSection" style="display: none;">
-            <h3>👤 Mon Profil</h3>
-            <p><strong>Email :</strong> <span id="profileEmail" style="color: #ff4757;"></span></p>
-            <p><strong>Statut :</strong> <span id="profileRole" style="font-weight: bold;"></span></p>
-            <button onclick="handleLogout()" style="background-color: #333; margin-top: 10px;">Se déconnecter</button>
-        </div>
-
-        <div class="settings-card">
-            <h3>💳 Enregistrer / Gérer ses informations de carte</h3>
-            <div id="savedCardInfo" style="margin-bottom: 15px; font-size: 14px; color: #aaa;">Aucune carte enregistrée.</div>
-            <input type="text" id="cardName" placeholder="Nom sur la carte">
-            <input type="text" id="cardNumber" placeholder="Numéro de carte (16 chiffres)">
-            <input type="text" id="cardExp" placeholder="Date d'expiration (MM/AA)">
-            <input type="password" id="cardCvc" placeholder="CVC (3 chiffres)">
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="saveCard()">Enregistrer la carte</button>
-                <button onclick="deleteCard()" style="background-color: #ff3838;">Supprimer la carte</button>
+            <div class="info-box">
+                <h3>Besoin d'assistance supplémentaire ?</h3>
+                <p>Contactez-nous directement via nos réseaux ou notre serveur de support pour toute question relative à vos achats.</p>
             </div>
-            <p id="cardStatus" style="color:#ff4757; font-size:13px; margin-top:10px;"></p>
-        </div>
+        </section>
 
-        <div class="settings-card">
-            <h3>📊 Suivi des Dépenses</h3>
-            <p style="font-size: 18px;">Total de vos dépenses : <strong id="totalSpent" style="color: #ff4757;">0.00 €</strong></p>
-        </div>
+        <!-- Page Paramètres -->
+        <section id="parametres" class="page">
+            <div class="section-title">Paramètres & Compte</div>
+            <div class="info-box">
+                <h3>Préférences du compte</h3>
+                <p>Gérez vos informations personnelles et vos préférences de navigation sur ARKBERN SHOP.</p>
+            </div>
+        </section>
+    </div>
 
-        <div class="settings-card">
-            <h3>🎟️ Codes de Réduction & Coupons</h3>
-            <input type="text" id="couponInput" placeholder="Entrez votre code promo ici">
-            <button onclick="applyCoupon()" style="margin-top: 10px;">Valider le code</button>
-            <p id="couponMsg" style="font-size: 13px; margin-top: 10px;"></p>
-
-            <h4 style="margin-top: 20px;">Tous les coupons disponibles :</h4>
-            <div id="couponsListContainer"></div>
-        </div>
-    </section>
+    <footer>
+        &copy; 2026 ARKBERN SHOP. Tous droits réservés.
+    </footer>
 
     <script>
         function switchPage(pageId) {
-            let pages = document.querySelectorAll('.page-content');
-            pages.forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
-
-        // Données persistantes
-        let products = JSON.parse(localStorage.getItem('arkbern_products')) || [
-            { id: 1, name: "Casque Gaming Pro", price: 49.99, finalPrice: 49.99, category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque", stripeLink: "https://buy.stripe.com/test_casque_example", hasPromo: false },
-            { id: 2, name: "Sweat ARKBERN", price: 35.00, finalPrice: 28.00, category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat", stripeLink: "https://buy.stripe.com/test_sweat_example", hasPromo: true, promoText: "-20%" }
-        ];
-
-        let coupons = JSON.parse(localStorage.getItem('arkbern_coupons')) || [
-            { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" },
-            { code: "LIVRAISONGRATUITE", desc: "Frais de port offerts dès 30€ d'achat." }
-        ];
-
-        let totalSpentVal = parseFloat(localStorage.getItem('arkbern_spent')) || 0;
-        document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
-
-        // Mémorisation de la connexion
-        let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
-
-        function updateAuthUI() {
-            let adminBox = document.getElementById('adminContainer');
-            let authSection = document.getElementById('authSection');
-            let profileSection = document.getElementById('profileSection');
-
-            if (currentUser) {
-                authSection.style.display = 'none';
-                profileSection.style.display = 'block';
-                document.getElementById('profileEmail').innerText = currentUser.email;
-
-                if (currentUser.email === "kelanbernard9@gmail.com") {
-                    document.getElementById('profileRole').innerText = "Administrateur (Propriétaire)";
-                    document.getElementById('profileRole').style.color = "#2ed573";
-                    adminBox.style.display = 'block';
-                } else {
-                    document.getElementById('profileRole').innerText = "Membre / Client";
-                    document.getElementById('profileRole').style.color = "#ffa502";
-                    adminBox.style.display = 'none';
-                }
-            } else {
-                authSection.style.display = 'block';
-                profileSection.style.display = 'none';
-                adminBox.style.display = 'none';
-            }
-            displayProducts();
-            displayCoupons();
-            loadCardInfo();
-        }
-
-        function handleRegister() {
-            let email = document.getElementById('userEmailInput').value.trim();
-            let pass = document.getElementById('userPassInput').value.trim();
-            let msg = document.getElementById('authMsg');
-
-            if (!email || !pass) {
-                msg.style.color = "#ff4757";
-                msg.innerText = "❌ Remplis tous les champs.";
-                return;
-            }
-            localStorage.setItem('arkbern_user_account', JSON.stringify({ email, pass }));
-            msg.style.color = "#2ed573";
-            msg.innerText = "✔ Compte créé ! Tu peux te connecter.";
-        }
-
-        function handleLogin() {
-            let email = document.getElementById('userEmailInput'].value.trim();
-            let pass = document.getElementById('userPassInput'].value.trim();
-            let msg = document.getElementById('authMsg');
-            let savedAccount = JSON.parse(localStorage.getItem('arkbern_user_account'));
-
-            if ((email === "kelanbernard9@gmail.com" && pass.length > 0) || (savedAccount && savedAccount.email === email && savedAccount.pass === pass)) {
-                currentUser = { email };
-                localStorage.setItem('arkbern_current_user', JSON.stringify(currentUser));
-                msg.innerText = "";
-                updateAuthUI();
-            } else {
-                msg.style.color = "#ff4757";
-                msg.innerText = "❌ Email ou mot de passe incorrect.";
-            }
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('arkbern_current_user');
-            updateAuthUI();
-        }
-
-        // Affichage des produits & promos sur la page de présentation et boutique
-        function displayProducts(filteredList = products) {
-            let grid = document.getElementById('productsGrid');
-            let promoGrid = document.getElementById('promoGrid');
-            grid.innerHTML = "";
-            promoGrid.innerHTML = "";
-
-            let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
-
-            filteredList.forEach((p) => {
-                let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer l'article</button>` : '';
-                let stripeDisplay = isAdmin ? `<a class="stripe-link" href="${p.stripeLink}" target="_blank">Lien Stripe (Admin)</a>` : '';
-                
-                let priceHTML = "";
-                if (p.hasPromo) {
-                    priceHTML = `<div class="price-container"><span class="old-price">${p.price} €</span><span class="price">${p.finalPrice} €</span></div>`;
-                } else {
-                    priceHTML = `<div class="price-container"><span class="price">${p.price} €</span></div>`;
-                }
-
-                let cardHTML = `
-                    <div class="product-card">
-                        <img src="${p.image}" alt="${p.name}">
-                        <h3>${p.name}</h3>
-                        <p class="category-tag">${p.category.toUpperCase()}</p>
-                        ${priceHTML}
-                        <p class="desc">${p.desc}</p>
-                        <button onclick="buyItem('${p.name}', ${p.finalPrice}, '${p.stripeLink}')">Payer via Stripe</button>
-                        ${stripeDisplay}
-                        ${deleteBtn}
-                    </div>
-                `;
-                grid.innerHTML += cardHTML;
+            // Masquer toutes les pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
             });
 
-            // Affichage des articles en promo sur la page de présentation
-            let promos = products.filter(p => p.hasPromo);
-            if (promos.length === 0) promos = products.slice(0, 2); // Fallback si pas de promo explicite
-            
-            promos.slice(0, 2).forEach((p) => {
-                promoGrid.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.image}" alt="${p.name}">
-                        <h3>${p.name}</h3>
-                        <p class="category-tag">EN PROMO (${p.promoText || 'Spécial'})</p>
-                        <div class="price-container">
-                            <span class="old-price">${p.price} €</span>
-                            <span class="price" style="color:#ff4757;">${p.finalPrice} €</span>
-                        </div>
-                        <button onclick="buyItem('${p.name}', ${p.finalPrice}, '${p.stripeLink}')">Profiter de l'offre</button>
-                    </div>
-                `;
-            });
-        }
-
-        // Publication d'un article avec génération automatique de lien Stripe simulé
-        function addProduct() {
-            let name = document.getElementById('pName').value;
-            let price = parseFloat(document.getElementById('pPrice').value);
-            let category = document.getElementById('pCategory').value;
-            let desc = document.getElementById('pDesc').value;
-            let promoType = document.getElementById('promoType').value;
-            let promoVal = parseFloat(document.getElementById('promoValue').value) || 0;
-            let imageInput = document.getElementById('pImage');
-
-            if (!name || isNaN(price) || !desc) {
-                alert("Remplis le nom, un prix valide et la description !");
-                return;
+            // Afficher la page sélectionnée
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
             }
 
-            let finalPrice = price;
-            let hasPromo = false;
-            let promoText = "";
-
-            if (promoType === 'percent' && promoVal > 0) {
-                finalPrice = price - (price * promoVal / 100);
-                hasPromo = true;
-                promoText = "-" + promoVal + "%";
-            } else if (promoType === 'euro' && promoVal > 0) {
-                finalPrice = price - promoVal;
-                if (finalPrice < 0) finalPrice = 0;
-                hasPromo = true;
-                promoText = "-" + promoVal + "€";
-            }
-
-            finalPrice = parseFloat(finalPrice.toFixed(2));
-
-            // Génération automatique du lien Stripe (redirection directe vers ton compte de paiement)
-            let uniqueId = Date.now();
-            let autoStripeLink = `https://buy.stripe.com/test_arkbern_${uniqueId}`;
-
-            let saveNewItem = (imgData) => {
-                products.push({
-                    id: uniqueId,
-                    name,
-                    price,
-                    finalPrice,
-                    category,
-                    desc,
-                    image: imgData,
-                    stripeLink: autoStripeLink,
-                    hasPromo,
-                    promoText
-                });
-                localStorage.setItem('arkbern_products', JSON.stringify(products));
-                displayProducts();
-                clearForm();
-                alert("✔ Article publié avec succès ! Lien Stripe généré automatiquement.");
-            };
-
-            if (imageInput.files && imageInput.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) { saveNewItem(e.target.result); };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                saveNewItem("https://via.placeholder.com/220x140?text=Article");
-            }
-        }
-
-        function deleteProduct(id) {
-            products = products.filter(p => p.id !== id);
-            localStorage.setItem('arkbern_products', JSON.stringify(products));
-            displayProducts();
-        }
-
-        function clearForm() {
-            document.getElementById('pName').value = "";
-            document.getElementById('pPrice').value = "";
-            document.getElementById('pDesc').value = "";
-            document.getElementById('promoValue').value = "";
-            document.getElementById('pImage').value = "";
-            document.getElementById('promoType').value = "none";
-        }
-
-        function filterProducts() {
-            let searchVal = document.getElementById('searchBar').value.toLowerCase();
-            let catVal = document.getElementById('categoryFilter').value;
-
-            let filtered = products.filter(p => {
-                let matchesSearch = p.name.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
-                let matchesCat = (catVal === 'all' || p.category === catVal);
-                return matchesSearch && matchesCat;
+            // Mettre à jour l'état actif des boutons de la navbar
+            const buttons = document.querySelectorAll('.navbar nav button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
             });
 
-            displayProducts(filtered);
-        }
-
-        // Gestion des Cartes Bancaires (Enregistrement et Suppression persistante)
-        function saveCard() {
-            let name = document.getElementById('cardName').value.trim();
-            let number = document.getElementById('cardNumber').value.trim();
-            let exp = document.getElementById('cardExp').value.trim();
-            let cvc = document.getElementById('cardCvc').value.trim();
-
-            if (number.length < 12 || !name) {
-                document.getElementById('cardStatus').innerText = "❌ Informations de carte incomplètes.";
-                return;
+            const targetButton = document.getElementById('btn-' + pageId);
+            if (targetButton) {
+                targetButton.classList.add('active');
             }
 
-            // Masquer le numéro pour garder en sécurité (ex: •••• •••• •••• 1234)
-            let maskedNumber = "•••• •••• •••• " + number.slice(-4);
-            let cardData = { name, maskedNumber, exp, cvc };
-
-            localStorage.setItem('arkbern_saved_card', JSON.stringify(cardData));
-            document.getElementById('cardStatus').style.color = "#2ed573";
-            document.getElementById('cardStatus').innerText = "✔ Carte enregistrée de façon sécurisée !";
-            loadCardInfo();
+            // Remonter en haut de page lors du changement
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        function deleteCard() {
-            localStorage.removeItem('arkbern_saved_card');
-            document.getElementById('cardStatus').style.color = "#ff4757";
-            document.getElementById('cardStatus').innerText = "🗑️ Carte supprimée avec succès.";
-            document.getElementById('cardName').value = "";
-            document.getElementById('cardNumber').value = "";
-            document.getElementById('cardExp').value = "";
-            document.getElementById('cardCvc').value = "";
-            loadCardInfo();
-        }
-
-        function loadCardInfo() {
-            let cardInfoBox = document.getElementById('savedCardInfo');
-            let savedCard = JSON.parse(localStorage.getItem('arkbern_saved_card'));
-            if (savedCard) {
-                cardInfoBox.innerHTML = `💳 Carte enregistrée : <strong>${savedCard.maskedNumber}</strong> (Titulaire : ${savedCard.name}, Exp : ${savedCard.exp})`;
-            } else {
-                cardInfoBox.innerHTML = "Aucune carte enregistrée.";
-            }
-        }
-
-        // Achat et redirection vers le lien de paiement Stripe (envoie l'argent sur ton compte)
-        function buyItem(name, price, stripeLink) {
-            totalSpentVal += parseFloat(price);
-            localStorage.setItem('arkbern_spent', totalSpentVal);
-            document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
-
-            // Redirection vers le lien Stripe sécurisé de l'article pour envoyer l'argent directement sur ton compte
-            window.open(stripeLink, '_blank');
-        }
-
-        // Gestion des Coupons
-        function displayCoupons() {
-            let container = document.getElementById('couponsListContainer');
-            container.innerHTML = "";
-            let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
-
-            coupons.forEach((c, index) => {
-                let deleteAction = isAdmin ? `<button class="btn-delete" onclick="deleteCoupon(${index})">Supprimer</button>` : '';
-                container.innerHTML += `
-                    <div class="coupon-item">
-                        <div><strong>${c.code}</strong> : ${c.desc}</div>
-                        ${deleteAction}
-                    </div>
-                `;
-            });
-        }
-
-        function addCoupon() {
-            let code = document.getElementById('newCouponCode').value.trim().toUpperCase();
-            let desc = document.getElementById('newCouponDesc').value.trim();
-
-            if (!code || !desc) {
-                alert("Remplis le code et la description !");
-                return;
-            }
-            coupons.push({ code, desc });
-            localStorage.setItem('arkbern_coupons', JSON.stringify(coupons));
-            document.getElementById('newCouponCode').value = "";
-            document.getElementById('newCouponDesc').value = "";
-            displayCoupons();
-        }
-
-        function deleteCoupon(index) {
-            coupons.splice(index, 1);
-            localStorage.setItem('arkbern_coupons', JSON.stringify(coupons));
-            displayCoupons();
-        }
-
-        function applyCoupon() {
-            let code = document.getElementById('couponInput').value.trim().toUpperCase();
-            let msg = document.getElementById('couponMsg');
-            let found = coupons.some(c => c.code === code);
-
-            if (found) {
-                msg.style.color = "#2ed573";
-                msg.innerText = "✔ Code '" + code + "' appliqué avec succès !";
-            } else {
-                msg.style.color = "#ff4757";
-                msg.innerText = "❌ Code promo invalide.";
-            }
-        }
-
-        updateAuthUI();
     </script>
 </body>
 </html>
