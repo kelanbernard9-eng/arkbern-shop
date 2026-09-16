@@ -262,6 +262,13 @@
         <h2 style="text-align:center;">Notre Boutique</h2>
 
         <div id="adminContainer" style="display: none;">
+            <!-- BOUTON DE RÉINITIALISATION FORCÉE POUR LE TÉLÉPHONE -->
+            <div class="admin-box" style="border-color: #ffa502; background: #221a00;">
+                <h3>⚠️ MAINTENANCE / RESET MOBILE</h3>
+                <p style="font-size: 13px; color: #ccc;">Si vos articles ne se mettent pas à jour sur votre téléphone, cliquez ici pour effacer les vieux bugs en cache :</p>
+                <button onclick="forceResetShopCache()" style="background-color: #ffa502; color: black; font-weight: bold; width: 100%;">🔄 Forcer la mise à jour des articles</button>
+            </div>
+
             <div class="admin-box" style="border-color: #2ed573;">
                 <h3>👑 TRESORERIE ADMIN - VIREMENT BANCAIRE</h3>
                 <p style="font-size: 13px; color: #aaa;">Argent disponible dans la cagnotte :</p>
@@ -494,12 +501,20 @@
     </div>
 
     <script>
-        // SYSTÈME DE MISE À JOUR FORCÉE (v2.3) : Efface les anciens articles et force l'affichage propre
-        const CURRENT_VERSION = "v2.3";
+        // VERSION SUPÉRIEURE POUR FORCER LE RESET DU CACHE MOBILE
+        const CURRENT_VERSION = "v2.5";
         if (localStorage.getItem('arkbern_version') !== CURRENT_VERSION) {
             localStorage.removeItem('arkbern_products');
             localStorage.removeItem('arkbern_coupons');
             localStorage.setItem('arkbern_version', CURRENT_VERSION);
+        }
+
+        function forceResetShopCache() {
+            if (confirm("Voulez-vous vraiment réinitialiser la boutique et supprimer les anciens articles en cache ?")) {
+                localStorage.removeItem('arkbern_products');
+                localStorage.removeItem('arkbern_coupons');
+                location.reload();
+            }
         }
 
         function switchPage(pageId) {
@@ -946,10 +961,10 @@
         }
 
         function addProduct() {
-            let name = document.getElementById('pName').value;
+            let name = document.getElementById('pName').value.trim();
             let price = parseFloat(document.getElementById('pPrice').value);
             let category = document.getElementById('pCategory').value;
-            let desc = document.getElementById('pDesc').value;
+            let desc = document.getElementById('pDesc').value.trim();
             let promoType = document.getElementById('promoType').value;
             let promoVal = parseFloat(document.getElementById('promoValue').value) || 0;
             let imageInput = document.getElementById('pImage');
@@ -978,7 +993,7 @@
             let uniqueId = Date.now();
 
             let saveNewItem = (imgData) => {
-                products.push({
+                let newProd = {
                     id: uniqueId,
                     name,
                     price,
@@ -988,7 +1003,8 @@
                     image: imgData,
                     hasPromo,
                     promoText
-                });
+                };
+                products.push(newProd);
                 localStorage.setItem('arkbern_products', JSON.stringify(products));
                 displayProducts();
                 clearForm();
