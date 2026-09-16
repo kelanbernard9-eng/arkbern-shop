@@ -446,7 +446,7 @@
             </div>
         </div>
 
-        <!-- BLOC QR CODES (SITE + SUIVI COLIS) -->
+        <!-- BLOC QR CODES (SITE + SUIVI COLIS DIRECT) -->
         <div style="display: flex; justify-content: space-around; background: #f9f9f9; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; text-align: center;">
             <div>
                 <img id="qrCodeSite" src="" alt="QR Site" style="width: 90px; height: 90px; display: block; margin: 0 auto;">
@@ -454,7 +454,7 @@
             </div>
             <div>
                 <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 90px; height: 90px; display: block; margin: 0 auto;">
-                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour Mondial Relay</div>
+                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Suivi du colis (Mondial Relay)</div>
             </div>
         </div>
 
@@ -488,6 +488,14 @@
     </div>
 
     <script>
+        // SYSTÈME ANTI-CACHING : Force la mise à jour propre des produits et codes promo si la version change
+        const CURRENT_VERSION = "v2.2";
+        if (localStorage.getItem('arkbern_version') !== CURRENT_VERSION) {
+            localStorage.removeItem('arkbern_products');
+            localStorage.removeItem('arkbern_coupons');
+            localStorage.setItem('arkbern_version', CURRENT_VERSION);
+        }
+
         function switchPage(pageId) {
             let pages = document.querySelectorAll('.page-content');
             pages.forEach(p => p.classList.remove('active'));
@@ -860,18 +868,16 @@
                 itemsListUl.innerHTML += `<li>${i.name} - ${i.finalPrice} €</li>`;
             });
 
-            // URLs cibles pour les QR codes
             let siteUrl = window.location.href.split('#')[0];
+            // QR code de suivi Mondial Relay (redirige directement vers la page de suivi officielle du colis)
             let mondialRelayUrl = "https://www.mondialrelay.fr/suivi-de-colis/";
 
-            // Utilisation d'un service de génération de QR code stable et immédiat
             let qrSiteImg = document.getElementById('qrCodeSite');
             let qrRelayImg = document.getElementById('qrCodeRelay');
 
             qrSiteImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(siteUrl);
             qrRelayImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(mondialRelayUrl);
 
-            // Attendre une fraction de seconde pour que les images se chargent avant d'ouvrir la fenêtre d'impression
             setTimeout(() => {
                 window.print();
             }, 500);
