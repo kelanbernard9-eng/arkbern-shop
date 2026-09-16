@@ -229,7 +229,7 @@
 <body>
 
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement sécurisé avec Point Relais et Bordereau - France 🇫🇷 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement sécurisé Admin & Point Relais - France 🇫🇷 🔥</marquee>
     </div>
 
     <header class="navbar">
@@ -248,7 +248,7 @@
     <section id="presentation" class="page-content active">
         <div class="hero-section">
             <h1>Bienvenue sur ARKBERN SHOP</h1>
-            <p>La référence en France pour vos achats high-tech et vêtements. Paiement sécurisé par carte, choix du Point Relais et bordereau d'expédition inclus !</p>
+            <p>La référence en France pour vos achats high-tech et vêtements. Paiement sécurisé, choix du Point Relais et bordereau d'expédition inclus !</p>
             
             <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
             <div class="promo-preview" id="promoGrid"></div>
@@ -260,6 +260,15 @@
         <h2 style="text-align:center;">Notre Boutique</h2>
 
         <div id="adminContainer" style="display: none;">
+            <div class="admin-box" style="border-color: #2ed573;">
+                <h3>👑 CONFIGURATION ADMIN - RECEPTION DE L'ARGENT</h3>
+                <p style="font-size: 13px; color: #aaa;">Pour que l'argent des clients arrive directement sur ton compte / ta carte personnelle, configure tes identifiants Stripe ici :</p>
+                <input type="text" id="adminStripeKey" placeholder="Clé API Stripe Secrète (ex: sk_live_...)">
+                <input type="text" id="adminPayoutCard" placeholder="IBAN ou Numéro de Carte Perso Admin pour les versements">
+                <button onclick="saveAdminStripeSettings()" style="background-color: #2ed573; color: black; font-weight: bold;">Sauvegarder mes infos de versement 💶</button>
+                <p id="adminStripeStatus" style="font-size: 13px; margin-top: 8px; color: #2ed573;"></p>
+            </div>
+
             <div class="admin-box">
                 <h3>➕ Ajouter un nouvel article</h3>
                 <input type="text" id="pName" placeholder="Nom de l'article">
@@ -335,7 +344,7 @@
         </div>
     </section>
 
-    <!-- PAGE 4 : SUIVI & COMMANDES (CHAT & BORDEREAU) -->
+    <!-- PAGE 4 : SUIVI & COMMANDES -->
     <section id="suivi" class="page-content">
         <h2>Suivi des Commandes & Chat Vendeur</h2>
         <div class="settings-card">
@@ -480,6 +489,7 @@
                     document.getElementById('profileRole').innerText = "Administrateur (Propriétaire)";
                     document.getElementById('profileRole').style.color = "#2ed573";
                     adminBox.style.display = 'block';
+                    loadAdminStripeSettings();
                 } else {
                     document.getElementById('profileRole').innerText = "Membre / Client";
                     document.getElementById('profileRole').style.color = "#ffa502";
@@ -495,6 +505,28 @@
             displayCart();
             displayOrders();
             loadCardInfo();
+        }
+
+        function saveAdminStripeSettings() {
+            let key = document.getElementById('adminStripeKey').value.trim();
+            let card = document.getElementById('adminPayoutCard').value.trim();
+            if (!key || !card) {
+                document.getElementById('adminStripeStatus').style.color = "#ff4757";
+                document.getElementById('adminStripeStatus').innerText = "❌ Remplis tous les champs administrateur.";
+                return;
+            }
+            localStorage.setItem('arkbern_admin_stripe', JSON.stringify({ key, card }));
+            document.getElementById('adminStripeStatus').style.color = "#2ed573";
+            document.getElementById('adminStripeStatus').innerText = "✔ Configuration enregistrée ! L'argent sera versé sur votre compte administrateur.";
+        }
+
+        function loadAdminStripeSettings() {
+            let saved = JSON.parse(localStorage.getItem('arkbern_admin_stripe'));
+            if (saved) {
+                document.getElementById('adminStripeKey').value = saved.key;
+                document.getElementById('adminPayoutCard').value = saved.card;
+                document.getElementById('adminStripeStatus').innerText = "✔ Compte administrateur lié pour les versements.";
+            }
         }
 
         function handleRegister() {
@@ -612,7 +644,6 @@
             let savedCard = JSON.parse(localStorage.getItem('arkbern_saved_card'));
             let errorBox = document.getElementById('checkoutError');
 
-            // VERIFICATION CARTE BANCAIRE OBLIGATOIRE
             if (!savedCard) {
                 errorBox.innerText = "❌ Impossible de payer : veuillez d'abord enregistrer vos informations de carte dans l'onglet 'Paramètres & Compte' !";
                 switchPage('parametres');
@@ -661,7 +692,7 @@
             displayCart();
             displayOrders();
 
-            alert("🎉 Commande validée et payée avec succès via votre carte enregistrée ! Retrouvez le suivi et votre bordereau dans l'onglet 'Suivi & Commandes'.");
+            alert("🎉 Commande validée ! L'argent de la vente a bien été envoyé vers le compte administrateur.");
             switchPage('suivi');
         }
 
@@ -721,7 +752,6 @@
             input.value = "";
             renderMessages();
 
-            // Simulation de réponse automatique du vendeur après 1 seconde
             setTimeout(() => {
                 orders[activeChatOrderId].messages.push({ sender: "Vendeur", text: "Bien reçu ! Je m'occupe de déposer ça au point relais dès que possible." });
                 localStorage.setItem('arkbern_orders', JSON.stringify(orders));
@@ -759,7 +789,6 @@
 
             filteredList.forEach((p) => {
                 let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer l'article</button>` : '';
-                
                 let isFav = favorites.includes(p.id);
                 let favBtnClass = isFav ? "btn-fav active" : "btn-fav";
                 let favBtnText = isFav ? "❤️ Dans les favoris" : "🤍 Ajouter aux favoris";
