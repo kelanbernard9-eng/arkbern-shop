@@ -228,7 +228,7 @@
 <body>
 
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement Direct Interne & Point Relais - France 🇫🇷 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement Interne Sécurisé & Point Relais - France 🇫🇷 🔥</marquee>
     </div>
 
     <header class="navbar">
@@ -260,11 +260,13 @@
 
         <div id="adminContainer" style="display: none;">
             <div class="admin-box" style="border-color: #2ed573;">
-                <h3>👑 CONFIGURATION ADMIN - RECEPTION DES PAIEMENTS INTERNES</h3>
-                <p style="font-size: 13px; color: #aaa;">Indique ton IBAN personnel ou ton identifiant de compte administrateur où l'argent des clients doit être récolté :</p>
+                <h3>👑 TRESORERIE ADMIN - RECEPTION DE L'ARGENT</h3>
+                <p style="font-size: 13px; color: #aaa;">Voici l'argent total récolté sur le site grâce aux achats de vos clients :</p>
+                <div style="font-size: 24px; font-weight: bold; color: #2ed573; margin: 10px 0;" id="adminTotalEarnings">0.00 €</div>
                 <input type="text" id="adminIbanInput" placeholder="Ton IBAN (ex: FR76 XXXX XXXX XXXX XXXX XXXX XXX)">
-                <input type="text" id="adminNameInput" placeholder="Nom du titulaire du compte (ex: Bernard Kelan)">
-                <button onclick="saveAdminBanking()" style="background-color: #2ed573; color: black; font-weight: bold;">Sauvegarder mes coordonnées bancaires 💶</button>
+                <input type="text" id="adminNameInput" placeholder="Nom du titulaire (ex: Bernard Kelan)">
+                <button onclick="saveAdminBanking()" style="background-color: #2ed573; color: black; font-weight: bold;">Enregistrer mes coordonnées bancaires 💶</button>
+                <button onclick="resetAdminEarnings()" style="background-color: #ff3838; color: white; margin-top: 10px; font-size: 12px;">Vider / Retirer l'argent de la cagnotte</button>
                 <p id="adminBankStatus" style="font-size: 13px; margin-top: 8px; color: #2ed573;"></p>
             </div>
 
@@ -332,7 +334,7 @@
             </select>
             <p id="installmentInfo" style="font-size: 13px; color: #2ed573; margin-top: 5px;"></p>
 
-            <h4 style="margin-top: 20px;">💳 Paiement direct sur le site (Sans Stripe / Sans PayPal)</h4>
+            <h4 style="margin-top: 20px;">💳 Paiement direct sur le site (Sécurisé Interne)</h4>
             <input type="text" id="checkoutCardName" placeholder="Nom du titulaire de la carte">
             <input type="text" id="checkoutCardNumber" placeholder="Numéro de carte (16 chiffres)" maxlength="19">
             <div style="display: flex; gap: 10px;">
@@ -408,8 +410,8 @@
         </div>
 
         <div class="settings-card">
-            <h3>📊 Suivi des Dépenses</h3>
-            <p style="font-size: 18px;">Total de vos dépenses : <strong id="totalSpent" style="color: #ff4757;">0.00 €</strong></p>
+            <h3>📊 Suivi de vos Dépenses (Client)</h3>
+            <p style="font-size: 18px;">Total de vos achats : <strong id="totalSpent" style="color: #ff4757;">0.00 €</strong></p>
         </div>
 
         <div class="settings-card">
@@ -465,6 +467,8 @@
         let totalSpentVal = parseFloat(localStorage.getItem('arkbern_spent')) || 0;
         document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
 
+        let adminEarningsVal = parseFloat(localStorage.getItem('arkbern_admin_earnings')) || 0;
+
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
         let activeChatOrderId = null;
 
@@ -497,6 +501,7 @@
             displayCoupons();
             displayCart();
             displayOrders();
+            updateAdminEarningsDisplay();
         }
 
         function saveAdminBanking() {
@@ -509,7 +514,7 @@
             }
             localStorage.setItem('arkbern_admin_banking', JSON.stringify({ iban, name }));
             document.getElementById('adminBankStatus').style.color = "#2ed573";
-            document.getElementById('adminBankStatus').innerText = "✔ Coordonnées bancaires enregistrées pour recevoir l'argent des ventes !";
+            document.getElementById('adminBankStatus').innerText = "✔ Coordonnées bancaires enregistrées !";
         }
 
         function loadAdminBanking() {
@@ -518,6 +523,22 @@
                 document.getElementById('adminIbanInput').value = saved.iban;
                 document.getElementById('adminNameInput').value = saved.name;
                 document.getElementById('adminBankStatus').innerText = "✔ Compte admin lié (IBAN configuré).";
+            }
+        }
+
+        function updateAdminEarningsDisplay() {
+            let earningsElement = document.getElementById('adminTotalEarnings');
+            if (earningsElement) {
+                earningsElement.innerText = adminEarningsVal.toFixed(2) + " €";
+            }
+        }
+
+        function resetAdminEarnings() {
+            if (confirm("Voulez-vous réinitialiser le solde de la cagnotte administrateur à 0 € ?")) {
+                adminEarningsVal = 0;
+                localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
+                updateAdminEarningsDisplay();
+                alert("✔ Cagnotte vidée avec succès.");
             }
         }
 
@@ -664,9 +685,14 @@
             let total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
             let installments = document.getElementById('paymentInstallments').value;
 
+            // Ajout dynamique du montant aux dépenses du client et à la cagnotte admin
             totalSpentVal += total;
             localStorage.setItem('arkbern_spent', totalSpentVal);
             document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
+
+            adminEarningsVal += total;
+            localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
+            updateAdminEarningsDisplay();
 
             let newOrder = {
                 id: 'CMD-' + Math.floor(100000 + Math.random() * 900000),
@@ -687,7 +713,7 @@
             displayCart();
             displayOrders();
 
-            alert("🎉 Paiement validé sur le site ! La commande a été enregistrée et transmise à l'administrateur.");
+            alert(`🎉 Paiement validé ! ${total.toFixed(2)} € ont été débités de votre simulation et ajoutés à la trésorerie de l'administrateur.`);
             switchPage('suivi');
         }
 
