@@ -4,38 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARKBERN SHOP</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .top-banner {
+            background-color: #ff4757;
+            color: white;
+            font-weight: bold;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e1e1e;
+            padding: 15px 40px;
+            border-bottom: 1px solid #333;
+        }
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff4757;
+        }
+        .navbar nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .navbar nav a:hover {
+            color: #ff4757;
+        }
+        .page-content {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .hero-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .hero-section h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 18px;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .shop-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .shop-controls input, .shop-controls select {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #1e1e1e;
+            color: white;
+            font-size: 14px;
+        }
+        .products-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .product-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 8px;
+            width: 220px;
+            text-align: center;
+        }
+        .product-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .product-card h3 {
+            margin: 10px 0 5px 0;
+            font-size: 18px;
+        }
+        .category-tag {
+            font-size: 12px;
+            color: #ff4757;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .price {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .desc {
+            font-size: 13px;
+            color: #bbb;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #ff6b81;
+        }
+        .admin-box {
+            background-color: #1a1a1a;
+            border: 1px dashed #ff4757;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .admin-box input, .admin-box select, .admin-box textarea {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+        }
+        .settings-card {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Bandeau d'information défilant -->
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé - Profitez de nos nouveautés ! 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé - France 🇫🇷 🔥</marquee>
     </div>
 
-    <!-- Barre de navigation -->
     <header class="navbar">
         <div class="logo">ARKBERN SHOP</div>
         <nav>
-            <a href="#presentation">Présentation</a>
-            <a href="#shop">Boutique</a>
+            <a onclick="switchPage('presentation')">Présentation</a>
+            <a onclick="switchPage('shop')">Boutique</a>
+            <a onclick="switchPage('aide')">Aide</a>
+            <a onclick="switchPage('parametres')">Paramètres</a>
         </nav>
     </header>
 
-    <!-- Page de Présentation -->
-    <section id="presentation" class="hero-section">
-        <h1>Bienvenue dans le futur de la boutique en ligne</h1>
-        <p>ARKBERN SHOP est ta nouvelle destination incontournable pour retrouver les meilleurs objets, des vêtements stylés aux équipements high-tech. Qualité, rapidité et fiabilité au rendez-vous !</p>
+    <!-- PAGE 1 : PRESENTATION -->
+    <section id="presentation" class="page-content active">
+        <div class="hero-section">
+            <h1>Bienvenue sur ARKBERN SHOP</h1>
+            <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires de qualité. Simple, rapide et sécurisé !</p>
+        </div>
     </section>
 
-    <!-- Section Boutique avec recherche et catégories -->
-    <section id="shop" class="shop-section">
-        <h2>Notre Boutique</h2>
-        
-        <!-- Barre de recherche et filtres par catégories -->
+    <!-- PAGE 2 : BOUTIQUE -->
+    <section id="shop" class="page-content">
+        <h2 style="text-align:center;">Notre Boutique</h2>
+
+        <!-- Espace Administrateur pour poster des articles -->
+        <div class="admin-box">
+            <h3>➕ Ajouter un nouvel article (Admin)</h3>
+            <input type="text" id="pName" placeholder="Nom de l'article">
+            <input type="number" id="pPrice" placeholder="Prix (€)">
+            <select id="pCategory">
+                <option value="electronique">Électronique</option>
+                <option value="vetement">Vêtements</option>
+                <option value="accessoire">Accessoires</option>
+            </select>
+            <textarea id="pDesc" placeholder="Description de l'article"></textarea>
+            <label style="font-size:13px; color:#aaa;">Image de l'article :</label>
+            <input type="file" id="pImage" accept="image/*">
+            <button onclick="addProduct()">Publier l'article</button>
+        </div>
+
         <div class="shop-controls">
-            <input type="text" id="searchBar" placeholder="Rechercher un objet...">
-            <select id="categoryFilter">
+            <input type="text" id="searchBar" placeholder="Rechercher un objet..." onkeyup="filterProducts()">
+            <select id="categoryFilter" onchange="filterProducts()">
                 <option value="all">Toutes les catégories</option>
                 <option value="electronique">Électronique</option>
                 <option value="vetement">Vêtements</option>
@@ -43,30 +214,120 @@
             </select>
         </div>
 
-        <!-- Grille des produits -->
-        <div class="products-grid">
-            <div class="product-card" data-category="electronique">
-                <h3>Casque Gaming Pro</h3>
-                <p class="category-tag">Électronique</p>
-                <p class="price">49,99 €</p>
-                <button>Acheter</button>
-            </div>
-
-            <div class="product-card" data-category="vetement">
-                <h3>Sweat ARKBERN</h3>
-                <p class="category-tag">Vêtements</p>
-                <p class="price">35,00 €</p>
-                <button>Acheter</button>
-            </div>
-
-            <div class="product-card" data-category="accessoire">
-                <h3>Stylo Connecté</h3>
-                <p class="category-tag">Accessoires</p>
-                <p class="price">15,99 €</p>
-                <button>Acheter</button>
-            </div>
+        <div class="products-grid" id="productsGrid">
+            <!-- Les articles s'afficheront ici dynamiquement -->
         </div>
     </section>
 
+    <!-- PAGE 3 : AIDE -->
+    <section id="aide" class="page-content">
+        <h2>Centre d'Aide</h2>
+        <div class="settings-card">
+            <p><strong>Comment commander ?</strong> Choisissez votre article dans la boutique, vérifiez les stocks et contactez-nous directement via nos coordonnées.</p>
+            <p><strong>Livraison :</strong> Nous livrons partout en <strong>France</strong> sous 48h à 72h.</p>
+            <p><strong>Besoin d'assistance ?</strong> Envoyez-nous un email ou appelez-nous directement (voir l'onglet Paramètres).</p>
+        </div>
+    </section>
+
+    <!-- PAGE 4 : PARAMETRES -->
+    <section id="parametres" class="page-content">
+        <h2>Paramètres & Contact</h2>
+        <div class="settings-card">
+            <p><strong>Pays :</strong> France 🇫🇷</p>
+            <p><strong>Email officiel :</strong> kelanbernard9@gmail.com</p>
+            <p><strong>Téléphone :</strong> 07 80 13 01 72</p>
+            <p><strong>Gérant :</strong> ARKBERN SHOP Administration</p>
+        </div>
+    </section>
+
+    <script>
+        // Gestion des pages du site
+        function switchPage(pageId) {
+            let pages = document.querySelectorAll('.page-content');
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Charger les produits enregistrés ou mettre des exemples par défaut
+        let products = JSON.parse(localStorage.getItem('arkbern_products')) || [
+            { name: "Casque Gaming Pro", price: "49.99", category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque" },
+            { name: "Sweat ARKBERN", price: "35.00", category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat" }
+        ];
+
+        function displayProducts(filteredList = products) {
+            let grid = document.getElementById('productsGrid');
+            grid.innerHTML = "";
+            filteredList.forEach((p, index) => {
+                grid.innerHTML += `
+                    <div class="product-card" data-category="${p.category}">
+                        <img src="${p.image}" alt="${p.name}">
+                        <h3>${p.name}</h3>
+                        <p class="category-tag">${p.category.toUpperCase()}</p>
+                        <p class="price">${p.price} €</p>
+                        <p class="desc">${p.desc}</p>
+                        <button onclick="buyItem('${p.name}')">Acheter</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Ajouter un produit avec image locale
+        function addProduct() {
+            let name = document.getElementById('pName').value;
+            let price = document.getElementById('pPrice').value;
+            let category = document.getElementById('pCategory').value;
+            let desc = document.getElementById('pDesc').value;
+            let imageInput = document.getElementById('pImage');
+
+            if (!name || !price || !desc) {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
+
+            if (imageInput.files && imageInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    products.push({ name, price, category, desc, image: e.target.result });
+                    localStorage.setItem('arkbern_products', JSON.stringify(products));
+                    displayProducts();
+                    clearForm();
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                products.push({ name, price, category, desc, image: "https://via.placeholder.com/220x140?text=Article" });
+                localStorage.setItem('arkbern_products', JSON.stringify(products));
+                displayProducts();
+                clearForm();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('pName').value = "";
+            document.getElementById('pPrice').value = "";
+            document.getElementById('pDesc').value = "";
+            document.getElementById('pImage').value = "";
+        }
+
+        // Barre de recherche et filtres combinés
+        function filterProducts() {
+            let searchVal = document.getElementById('searchBar').value.toLowerCase();
+            let catVal = document.getElementById('categoryFilter').value;
+
+            let filtered = products.filter(p => {
+                let matchesSearch = p.name.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
+                let matchesCat = (catVal === 'all' || p.category === catVal);
+                return matchesSearch && matchesCat;
+            });
+
+            displayProducts(filtered);
+        }
+
+        function buyItem(name) {
+            alert("Merci pour votre intérêt pour " + name + " ! Contactez-nous à kelanbernard9@gmail.com pour finaliser l'achat.");
+        }
+
+        // Affichage initial au chargement de la page
+        displayProducts();
+    </script>
 </body>
 </html>
