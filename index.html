@@ -433,7 +433,7 @@
         </div>
     </section>
 
-    <!-- BORDEREAU D'EXPEDITION PRO AVEC VRAIS QR CODES CHARGÉS -->
+    <!-- BORDEREAU D'EXPEDITION PRO AVEC CODE SUIVI ET QR CODES -->
     <div id="printArea" style="background: white; color: black; padding: 25px; font-family: Arial, sans-serif; width: 100%; max-width: 600px; margin: 0 auto; border: 2px dashed #000;">
         <div style="display: flex; justify-content: space-between; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px;">
             <div>
@@ -446,14 +446,20 @@
             </div>
         </div>
 
+        <!-- CODE DE SUIVI DU COLIS VISIBLE -->
+        <div style="text-align: center; background: #f4f4f4; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc;">
+            <div style="font-size: 11px; font-weight: bold; color: #333;">CODE DE SUIVI OFFICIEL :</div>
+            <div style="font-family: monospace; font-size: 20px; font-weight: bold; color: #ff4757; margin-top: 3px;" id="printTrackingCode">MR-80000-ARKBERN</div>
+        </div>
+
         <!-- BLOC QR CODES (SITE + SUIVI COLIS DIRECT) -->
         <div style="display: flex; justify-content: space-around; background: #f9f9f9; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; text-align: center;">
             <div>
-                <img id="qrCodeSite" src="" alt="QR Site" style="width: 90px; height: 90px; display: block; margin: 0 auto;">
+                <img id="qrCodeSite" src="" alt="QR Site" style="width: 85px; height: 85px; display: block; margin: 0 auto;">
                 <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour aller sur le site</div>
             </div>
             <div>
-                <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 90px; height: 90px; display: block; margin: 0 auto;">
+                <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 85px; height: 85px; display: block; margin: 0 auto;">
                 <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Suivi du colis (Mondial Relay)</div>
             </div>
         </div>
@@ -488,8 +494,8 @@
     </div>
 
     <script>
-        // SYSTÈME ANTI-CACHING : Force la mise à jour propre des produits et codes promo si la version change
-        const CURRENT_VERSION = "v2.2";
+        // SYSTÈME DE MISE À JOUR FORCÉE (v2.3) : Efface les anciens articles et force l'affichage propre
+        const CURRENT_VERSION = "v2.3";
         if (localStorage.getItem('arkbern_version') !== CURRENT_VERSION) {
             localStorage.removeItem('arkbern_products');
             localStorage.removeItem('arkbern_coupons');
@@ -765,8 +771,11 @@
             localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
             updateAdminEarningsDisplay();
 
+            let trackingNumber = 'MR-' + Math.floor(10000000 + Math.random() * 90000000);
+
             let newOrder = {
                 id: 'CMD-' + Math.floor(100000 + Math.random() * 900000),
+                tracking: trackingNumber,
                 date: new Date().toLocaleDateString('fr-FR'),
                 items: [...cart],
                 total: total,
@@ -807,6 +816,7 @@
                         </div>
                         <div style="font-size: 13px; color: #ccc;">Articles : ${itemsNames}</div>
                         <div style="font-size: 13px; color: #aaa;">Point Relais : ${ord.shipping.relay} (${ord.shipping.city})</div>
+                        <div style="font-size: 13px; color: #ffa502;">Code de suivi : <strong>${ord.tracking || 'MR-80000-ARKBERN'}</strong></div>
                         <div style="display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
                             <button onclick="openChat(${index})" style="background-color: #0984e3; font-size: 12px; padding: 6px 12px;">💬 Discuter avec le vendeur</button>
                             <button onclick="printBordereau(${index})" style="background-color: #e1b12c; color: black; font-size: 12px; padding: 6px 12px;">🖨️ Imprimer le Bordereau Vendeur</button>
@@ -861,6 +871,7 @@
             document.getElementById('printAddress').innerText = ord.shipping.address;
             document.getElementById('printCity').innerText = ord.shipping.city;
             document.getElementById('printRelay').innerText = ord.shipping.relay;
+            document.getElementById('printTrackingCode').innerText = ord.tracking || 'MR-80000-ARKBERN';
 
             let itemsListUl = document.getElementById('printItemsList');
             itemsListUl.innerHTML = "";
@@ -869,7 +880,6 @@
             });
 
             let siteUrl = window.location.href.split('#')[0];
-            // QR code de suivi Mondial Relay (redirige directement vers la page de suivi officielle du colis)
             let mondialRelayUrl = "https://www.mondialrelay.fr/suivi-de-colis/";
 
             let qrSiteImg = document.getElementById('qrCodeSite');
