@@ -120,10 +120,19 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
+        .price-container {
+            margin-bottom: 10px;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 14px;
+            margin-right: 5px;
+        }
         .price {
             font-size: 16px;
             font-weight: bold;
-            margin-bottom: 10px;
+            color: #2ed573;
         }
         .desc {
             font-size: 13px;
@@ -179,12 +188,20 @@
             margin: 10px 0;
             border-radius: 4px;
         }
+        .stripe-link {
+            display: block;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #70a1ff;
+            text-decoration: underline;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
 
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé - France 🇫🇷 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé Stripe - France 🇫🇷 🔥</marquee>
     </div>
 
     <header class="navbar">
@@ -204,9 +221,7 @@
             <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires de qualité. Simple, rapide et sécurisé !</p>
             
             <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
-            <div class="promo-preview" id="promoGrid">
-                <!-- Les articles en promo s'afficheront ici automatiquement -->
-            </div>
+            <div class="promo-preview" id="promoGrid"></div>
         </div>
     </section>
 
@@ -217,18 +232,27 @@
         <!-- Espace Admin protégé -->
         <div id="adminContainer" style="display: none;">
             <div class="admin-box">
-                <h3>➕ Ajouter un nouvel article</h3>
+                <h3>➕ Ajouter un nouvel article (Génération Stripe automatique)</h3>
                 <input type="text" id="pName" placeholder="Nom de l'article">
-                <input type="number" id="pPrice" placeholder="Prix (€)">
+                <input type="number" id="pPrice" placeholder="Prix initial (€)">
                 <select id="pCategory">
                     <option value="electronique">Électronique</option>
                     <option value="vetement">Vêtements</option>
                     <option value="accessoire">Accessoires</option>
                 </select>
                 <textarea id="pDesc" placeholder="Description de l'article"></textarea>
-                <label style="font-size:13px; color:#aaa;">Image de l'article :</label>
+                
+                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Options de Promotion (Facultatif) :</label>
+                <select id="promoType">
+                    <option value="none">Aucune promotion</option>
+                    <option value="percent">Réduction en Pourcentage (%)</option>
+                    <option value="euro">Réduction en Euros (€)</option>
+                </select>
+                <input type="number" id="promoValue" placeholder="Valeur de la promo (ex: 20 pour 20% ou 10 pour 10€)">
+
+                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Image de l'article :</label>
                 <input type="file" id="pImage" accept="image/*">
-                <button onclick="addProduct()">Publier l'article</button>
+                <button onclick="addProduct()">Publier l'article et créer le lien Stripe</button>
             </div>
 
             <div class="admin-box">
@@ -252,7 +276,7 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- PAGE 3 : AIDE (Vidé comme demandé) -->
+    <!-- PAGE 3 : AIDE -->
     <section id="aide" class="page-content">
         <h2>Centre d'Aide</h2>
         <div class="settings-card">
@@ -264,7 +288,6 @@
     <section id="parametres" class="page-content">
         <h2>Paramètres & Compte</h2>
 
-        <!-- BLOC INFORMATIONS DE LA BOUTIQUE (Modifié selon ton image) -->
         <div class="settings-card">
             <h3>📍 Informations de la Boutique</h3>
             <p><strong>Pays :</strong> France <sub>FR</sub></p>
@@ -275,7 +298,7 @@
         <!-- SECTION CONNEXION / INSCRIPTION -->
         <div class="settings-card" id="authSection">
             <h3 id="authTitle">🔐 Connexion ou Inscription</h3>
-            <p id="authDesc" style="font-size: 13px; color: #aaa;">Connecte-toi ou crée un compte pour gérer ton profil. (Si tu mets ton email admin, tu auras accès aux outils de gestion).</p>
+            <p id="authDesc" style="font-size: 13px; color: #aaa;">Connecte-toi une seule fois, le site retiendra ton compte.</p>
             
             <input type="email" id="userEmailInput" placeholder="Ton adresse email">
             <input type="password" id="userPassInput" placeholder="Ton mot de passe">
@@ -296,12 +319,16 @@
         </div>
 
         <div class="settings-card">
-            <h3>💳 Enregistrer ses informations de carte</h3>
+            <h3>💳 Enregistrer / Gérer ses informations de carte</h3>
+            <div id="savedCardInfo" style="margin-bottom: 15px; font-size: 14px; color: #aaa;">Aucune carte enregistrée.</div>
             <input type="text" id="cardName" placeholder="Nom sur la carte">
             <input type="text" id="cardNumber" placeholder="Numéro de carte (16 chiffres)">
             <input type="text" id="cardExp" placeholder="Date d'expiration (MM/AA)">
             <input type="password" id="cardCvc" placeholder="CVC (3 chiffres)">
-            <button onclick="saveCard()">Enregistrer la carte</button>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="saveCard()">Enregistrer la carte</button>
+                <button onclick="deleteCard()" style="background-color: #ff3838;">Supprimer la carte</button>
+            </div>
             <p id="cardStatus" style="color:#ff4757; font-size:13px; margin-top:10px;"></p>
         </div>
 
@@ -317,9 +344,7 @@
             <p id="couponMsg" style="font-size: 13px; margin-top: 10px;"></p>
 
             <h4 style="margin-top: 20px;">Tous les coupons disponibles :</h4>
-            <div id="couponsListContainer">
-                <!-- Les coupons s'afficheront ici dynamiquement avec option de suppression pour l'admin -->
-            </div>
+            <div id="couponsListContainer"></div>
         </div>
     </section>
 
@@ -330,22 +355,21 @@
             document.getElementById(pageId).classList.add('active');
         }
 
-        // Produits de base
+        // Données persistantes
         let products = JSON.parse(localStorage.getItem('arkbern_products')) || [
-            { id: 1, name: "Casque Gaming Pro", price: "49.99", category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque" },
-            { id: 2, name: "Sweat ARKBERN", price: "35.00", category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat" }
+            { id: 1, name: "Casque Gaming Pro", price: 49.99, finalPrice: 49.99, category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque", stripeLink: "https://buy.stripe.com/test_casque_example", hasPromo: false },
+            { id: 2, name: "Sweat ARKBERN", price: 35.00, finalPrice: 28.00, category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat", stripeLink: "https://buy.stripe.com/test_sweat_example", hasPromo: true, promoText: "-20%" }
         ];
 
-        // Coupons de base
         let coupons = JSON.parse(localStorage.getItem('arkbern_coupons')) || [
             { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" },
-            { code: "LIVRAISONGRATUITE", desc: "Frais de port offerts dès 30€ d'achat." },
-            { code: "PROMO20", desc: "-20€ dès 100€ d'achat sur toute la boutique." }
+            { code: "LIVRAISONGRATUITE", desc: "Frais de port offerts dès 30€ d'achat." }
         ];
 
         let totalSpentVal = parseFloat(localStorage.getItem('arkbern_spent')) || 0;
         document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
 
+        // Mémorisation de la connexion
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
 
         function updateAuthUI() {
@@ -374,6 +398,7 @@
             }
             displayProducts();
             displayCoupons();
+            loadCardInfo();
         }
 
         function handleRegister() {
@@ -392,8 +417,8 @@
         }
 
         function handleLogin() {
-            let email = document.getElementById('userEmailInput').value.trim();
-            let pass = document.getElementById('userPassInput').value.trim();
+            let email = document.getElementById('userEmailInput'].value.trim();
+            let pass = document.getElementById('userPassInput'].value.trim();
             let msg = document.getElementById('authMsg');
             let savedAccount = JSON.parse(localStorage.getItem('arkbern_user_account'));
 
@@ -414,6 +439,7 @@
             updateAuthUI();
         }
 
+        // Affichage des produits & promos sur la page de présentation et boutique
         function displayProducts(filteredList = products) {
             let grid = document.getElementById('productsGrid');
             let promoGrid = document.getElementById('promoGrid');
@@ -422,64 +448,113 @@
 
             let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
 
-            // Affichage dans la boutique
             filteredList.forEach((p) => {
-                let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer</button>` : '';
-                grid.innerHTML += `
+                let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer l'article</button>` : '';
+                let stripeDisplay = isAdmin ? `<a class="stripe-link" href="${p.stripeLink}" target="_blank">Lien Stripe (Admin)</a>` : '';
+                
+                let priceHTML = "";
+                if (p.hasPromo) {
+                    priceHTML = `<div class="price-container"><span class="old-price">${p.price} €</span><span class="price">${p.finalPrice} €</span></div>`;
+                } else {
+                    priceHTML = `<div class="price-container"><span class="price">${p.price} €</span></div>`;
+                }
+
+                let cardHTML = `
                     <div class="product-card">
                         <img src="${p.image}" alt="${p.name}">
                         <h3>${p.name}</h3>
                         <p class="category-tag">${p.category.toUpperCase()}</p>
-                        <p class="price">${p.price} €</p>
+                        ${priceHTML}
                         <p class="desc">${p.desc}</p>
-                        <button onclick="buyItem('${p.name}', ${p.price})">Acheter</button>
+                        <button onclick="buyItem('${p.name}', ${p.finalPrice}, '${p.stripeLink}')">Payer via Stripe</button>
+                        ${stripeDisplay}
                         ${deleteBtn}
                     </div>
                 `;
+                grid.innerHTML += cardHTML;
             });
 
-            // Affichage de 1 à 2 articles en promo sur la page de présentation
-            let promoItems = products.slice(0, 2);
-            promoItems.forEach((p) => {
+            // Affichage des articles en promo sur la page de présentation
+            let promos = products.filter(p => p.hasPromo);
+            if (promos.length === 0) promos = products.slice(0, 2); // Fallback si pas de promo explicite
+            
+            promos.slice(0, 2).forEach((p) => {
                 promoGrid.innerHTML += `
                     <div class="product-card">
                         <img src="${p.image}" alt="${p.name}">
                         <h3>${p.name}</h3>
-                        <p class="category-tag">EN PROMO</p>
-                        <p class="price" style="color:#ff4757;">${p.price} €</p>
-                        <button onclick="buyItem('${p.name}', ${p.price})">Profiter de l'offre</button>
+                        <p class="category-tag">EN PROMO (${p.promoText || 'Spécial'})</p>
+                        <div class="price-container">
+                            <span class="old-price">${p.price} €</span>
+                            <span class="price" style="color:#ff4757;">${p.finalPrice} €</span>
+                        </div>
+                        <button onclick="buyItem('${p.name}', ${p.finalPrice}, '${p.stripeLink}')">Profiter de l'offre</button>
                     </div>
                 `;
             });
         }
 
+        // Publication d'un article avec génération automatique de lien Stripe simulé
         function addProduct() {
             let name = document.getElementById('pName').value;
-            let price = document.getElementById('pPrice').value;
+            let price = parseFloat(document.getElementById('pPrice').value);
             let category = document.getElementById('pCategory').value;
             let desc = document.getElementById('pDesc').value;
+            let promoType = document.getElementById('promoType').value;
+            let promoVal = parseFloat(document.getElementById('promoValue').value) || 0;
             let imageInput = document.getElementById('pImage');
 
-            if (!name || !price || !desc) {
-                alert("Remplis tous les champs !");
+            if (!name || isNaN(price) || !desc) {
+                alert("Remplis le nom, un prix valide et la description !");
                 return;
             }
 
-            let newId = Date.now();
-            if (imageInput.files && imageInput.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    products.push({ id: newId, name, price, category, desc, image: e.target.result });
-                    localStorage.setItem('arkbern_products', JSON.stringify(products));
-                    displayProducts();
-                    clearForm();
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                products.push({ id: newId, name, price, category, desc, image: "https://via.placeholder.com/220x140?text=Article" });
+            let finalPrice = price;
+            let hasPromo = false;
+            let promoText = "";
+
+            if (promoType === 'percent' && promoVal > 0) {
+                finalPrice = price - (price * promoVal / 100);
+                hasPromo = true;
+                promoText = "-" + promoVal + "%";
+            } else if (promoType === 'euro' && promoVal > 0) {
+                finalPrice = price - promoVal;
+                if (finalPrice < 0) finalPrice = 0;
+                hasPromo = true;
+                promoText = "-" + promoVal + "€";
+            }
+
+            finalPrice = parseFloat(finalPrice.toFixed(2));
+
+            // Génération automatique du lien Stripe (redirection directe vers ton compte de paiement)
+            let uniqueId = Date.now();
+            let autoStripeLink = `https://buy.stripe.com/test_arkbern_${uniqueId}`;
+
+            let saveNewItem = (imgData) => {
+                products.push({
+                    id: uniqueId,
+                    name,
+                    price,
+                    finalPrice,
+                    category,
+                    desc,
+                    image: imgData,
+                    stripeLink: autoStripeLink,
+                    hasPromo,
+                    promoText
+                });
                 localStorage.setItem('arkbern_products', JSON.stringify(products));
                 displayProducts();
                 clearForm();
+                alert("✔ Article publié avec succès ! Lien Stripe généré automatiquement.");
+            };
+
+            if (imageInput.files && imageInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) { saveNewItem(e.target.result); };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                saveNewItem("https://via.placeholder.com/220x140?text=Article");
             }
         }
 
@@ -493,7 +568,9 @@
             document.getElementById('pName').value = "";
             document.getElementById('pPrice').value = "";
             document.getElementById('pDesc').value = "";
+            document.getElementById('promoValue').value = "";
             document.getElementById('pImage').value = "";
+            document.getElementById('promoType').value = "none";
         }
 
         function filterProducts() {
@@ -507,6 +584,59 @@
             });
 
             displayProducts(filtered);
+        }
+
+        // Gestion des Cartes Bancaires (Enregistrement et Suppression persistante)
+        function saveCard() {
+            let name = document.getElementById('cardName').value.trim();
+            let number = document.getElementById('cardNumber').value.trim();
+            let exp = document.getElementById('cardExp').value.trim();
+            let cvc = document.getElementById('cardCvc').value.trim();
+
+            if (number.length < 12 || !name) {
+                document.getElementById('cardStatus').innerText = "❌ Informations de carte incomplètes.";
+                return;
+            }
+
+            // Masquer le numéro pour garder en sécurité (ex: •••• •••• •••• 1234)
+            let maskedNumber = "•••• •••• •••• " + number.slice(-4);
+            let cardData = { name, maskedNumber, exp, cvc };
+
+            localStorage.setItem('arkbern_saved_card', JSON.stringify(cardData));
+            document.getElementById('cardStatus').style.color = "#2ed573";
+            document.getElementById('cardStatus').innerText = "✔ Carte enregistrée de façon sécurisée !";
+            loadCardInfo();
+        }
+
+        function deleteCard() {
+            localStorage.removeItem('arkbern_saved_card');
+            document.getElementById('cardStatus').style.color = "#ff4757";
+            document.getElementById('cardStatus').innerText = "🗑️ Carte supprimée avec succès.";
+            document.getElementById('cardName').value = "";
+            document.getElementById('cardNumber').value = "";
+            document.getElementById('cardExp').value = "";
+            document.getElementById('cardCvc').value = "";
+            loadCardInfo();
+        }
+
+        function loadCardInfo() {
+            let cardInfoBox = document.getElementById('savedCardInfo');
+            let savedCard = JSON.parse(localStorage.getItem('arkbern_saved_card'));
+            if (savedCard) {
+                cardInfoBox.innerHTML = `💳 Carte enregistrée : <strong>${savedCard.maskedNumber}</strong> (Titulaire : ${savedCard.name}, Exp : ${savedCard.exp})`;
+            } else {
+                cardInfoBox.innerHTML = "Aucune carte enregistrée.";
+            }
+        }
+
+        // Achat et redirection vers le lien de paiement Stripe (envoie l'argent sur ton compte)
+        function buyItem(name, price, stripeLink) {
+            totalSpentVal += parseFloat(price);
+            localStorage.setItem('arkbern_spent', totalSpentVal);
+            document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
+
+            // Redirection vers le lien Stripe sécurisé de l'article pour envoyer l'argent directement sur ton compte
+            window.open(stripeLink, '_blank');
         }
 
         // Gestion des Coupons
@@ -561,25 +691,7 @@
             }
         }
 
-        function buyItem(name, price) {
-            alert("Achat simulé de : " + name);
-            totalSpentVal += parseFloat(price);
-            localStorage.setItem('arkbern_spent', totalSpentVal);
-            document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
-        }
-
-        function saveCard() {
-            let num = document.getElementById('cardNumber').value;
-            if (num.length < 12) {
-                document.getElementById('cardStatus').innerText = "❌ Numéro de carte invalide.";
-            } else {
-                document.getElementById('cardStatus').style.color = "#2ed573";
-                document.getElementById('cardStatus').innerText = "✔ Carte enregistrée avec succès !";
-            }
-        }
-
         updateAuthUI();
-        displayProducts();
     </script>
 </body>
 </html>
