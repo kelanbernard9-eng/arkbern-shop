@@ -208,7 +208,6 @@
             border-bottom: 1px solid #333;
             padding: 10px 0;
         }
-        /* Style pour le bordereau d'impression */
         #printArea {
             display: none;
             background: white;
@@ -229,7 +228,7 @@
 <body>
 
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement sécurisé Admin & Point Relais - France 🇫🇷 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement Direct Interne & Point Relais - France 🇫🇷 🔥</marquee>
     </div>
 
     <header class="navbar">
@@ -248,7 +247,7 @@
     <section id="presentation" class="page-content active">
         <div class="hero-section">
             <h1>Bienvenue sur ARKBERN SHOP</h1>
-            <p>La référence en France pour vos achats high-tech et vêtements. Paiement sécurisé, choix du Point Relais et bordereau d'expédition inclus !</p>
+            <p>La référence en France pour vos achats high-tech et vêtements. Paiement direct sécurisé sur le site, choix du Point Relais et bordereau d'expédition inclus !</p>
             
             <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
             <div class="promo-preview" id="promoGrid"></div>
@@ -261,12 +260,12 @@
 
         <div id="adminContainer" style="display: none;">
             <div class="admin-box" style="border-color: #2ed573;">
-                <h3>👑 CONFIGURATION ADMIN - RECEPTION DE L'ARGENT</h3>
-                <p style="font-size: 13px; color: #aaa;">Pour que l'argent des clients arrive directement sur ton compte / ta carte personnelle, configure tes identifiants Stripe ici :</p>
-                <input type="text" id="adminStripeKey" placeholder="Clé API Stripe Secrète (ex: sk_live_...)">
-                <input type="text" id="adminPayoutCard" placeholder="IBAN ou Numéro de Carte Perso Admin pour les versements">
-                <button onclick="saveAdminStripeSettings()" style="background-color: #2ed573; color: black; font-weight: bold;">Sauvegarder mes infos de versement 💶</button>
-                <p id="adminStripeStatus" style="font-size: 13px; margin-top: 8px; color: #2ed573;"></p>
+                <h3>👑 CONFIGURATION ADMIN - RECEPTION DES PAIEMENTS INTERNES</h3>
+                <p style="font-size: 13px; color: #aaa;">Indique ton IBAN personnel ou ton identifiant de compte administrateur où l'argent des clients doit être récolté :</p>
+                <input type="text" id="adminIbanInput" placeholder="Ton IBAN (ex: FR76 XXXX XXXX XXXX XXXX XXXX XXX)">
+                <input type="text" id="adminNameInput" placeholder="Nom du titulaire du compte (ex: Bernard Kelan)">
+                <button onclick="saveAdminBanking()" style="background-color: #2ed573; color: black; font-weight: bold;">Sauvegarder mes coordonnées bancaires 💶</button>
+                <p id="adminBankStatus" style="font-size: 13px; margin-top: 8px; color: #2ed573;"></p>
             </div>
 
             <div class="admin-box">
@@ -315,16 +314,16 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- PAGE 3 : PANIER & VALIDATION -->
+    <!-- PAGE 3 : PANIER & VALIDATION DIRECTE -->
     <section id="panier" class="page-content">
-        <h2>Mon Panier & Validation de Commande</h2>
+        <h2>Mon Panier & Paiement Sécurisé ARKBERN</h2>
         <div class="cart-card">
             <h3>🛒 Articles sélectionnés</h3>
             <div id="cartItemsContainer">
                 <p style="color: #aaa; text-align: center;">Votre panier est vide.</p>
             </div>
             <hr style="border-color: #444; margin: 20px 0;">
-            <p style="font-size: 18px;">Total du panier : <strong id="cartTotalPrice" style="color: #ff4757;">0.00 €</strong></p>
+            <p style="font-size: 18px;">Total à régler : <strong id="cartTotalPrice" style="color: #ff4757;">0.00 €</strong></p>
 
             <h4 style="margin-top: 20px;">Mode de paiement :</h4>
             <select id="paymentInstallments" onchange="updateInstallmentDetails()">
@@ -333,13 +332,21 @@
             </select>
             <p id="installmentInfo" style="font-size: 13px; color: #2ed573; margin-top: 5px;"></p>
 
+            <h4 style="margin-top: 20px;">💳 Paiement direct sur le site (Sans Stripe / Sans PayPal)</h4>
+            <input type="text" id="checkoutCardName" placeholder="Nom du titulaire de la carte">
+            <input type="text" id="checkoutCardNumber" placeholder="Numéro de carte (16 chiffres)" maxlength="19">
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="checkoutCardExp" placeholder="MM/AA" maxlength="5">
+                <input type="password" id="checkoutCardCvc" placeholder="CVC" maxlength="4">
+            </div>
+
             <h4 style="margin-top: 20px;">📍 Adresse & Point Relais de Livraison :</h4>
             <input type="text" id="shipName" placeholder="Nom et Prénom">
             <input type="text" id="shipAddress" placeholder="Adresse postale (ex: 12 rue de la Paix)">
             <input type="text" id="shipCity" placeholder="Ville et Code Postal (ex: 80000 Amiens)">
             <input type="text" id="shipRelay" placeholder="Nom ou référence du Point Relais choisi (ex: Mondial Relay - Tabac de la Gare)">
 
-            <button onclick="checkoutOrder()" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; background-color: #2ed573;">Valider et Payer l'achat 🚀</button>
+            <button onclick="checkoutOrderDirect()" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; background-color: #2ed573; color: black; font-weight: bold;">Payer et valider la commande 🚀</button>
             <p id="checkoutError" style="color: #ff4757; font-size: 13px; margin-top: 10px; text-align: center;"></p>
         </div>
     </section>
@@ -398,20 +405,6 @@
             <p><strong>Email :</strong> <span id="profileEmail" style="color: #ff4757;"></span></p>
             <p><strong>Statut :</strong> <span id="profileRole" style="font-weight: bold;"></span></p>
             <button onclick="handleLogout()" style="background-color: #333; margin-top: 10px;">Se déconnecter</button>
-        </div>
-
-        <div class="settings-card">
-            <h3>💳 Enregistrer ses informations de carte (OBLIGATOIRE POUR PAYER)</h3>
-            <div id="savedCardInfo" style="margin-bottom: 15px; font-size: 14px; color: #aaa;">Aucune carte enregistrée.</div>
-            <input type="text" id="cardName" placeholder="Nom sur la carte">
-            <input type="text" id="cardNumber" placeholder="Numéro de carte (16 chiffres)">
-            <input type="text" id="cardExp" placeholder="Date d'expiration (MM/AA)">
-            <input type="password" id="cardCvc" placeholder="CVC (3 chiffres)">
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="saveCard()">Enregistrer la carte</button>
-                <button onclick="deleteCard()" style="background-color: #ff3838;">Supprimer la carte</button>
-            </div>
-            <p id="cardStatus" style="color:#ff4757; font-size:13px; margin-top:10px;"></p>
         </div>
 
         <div class="settings-card">
@@ -489,7 +482,7 @@
                     document.getElementById('profileRole').innerText = "Administrateur (Propriétaire)";
                     document.getElementById('profileRole').style.color = "#2ed573";
                     adminBox.style.display = 'block';
-                    loadAdminStripeSettings();
+                    loadAdminBanking();
                 } else {
                     document.getElementById('profileRole').innerText = "Membre / Client";
                     document.getElementById('profileRole').style.color = "#ffa502";
@@ -504,28 +497,27 @@
             displayCoupons();
             displayCart();
             displayOrders();
-            loadCardInfo();
         }
 
-        function saveAdminStripeSettings() {
-            let key = document.getElementById('adminStripeKey').value.trim();
-            let card = document.getElementById('adminPayoutCard').value.trim();
-            if (!key || !card) {
-                document.getElementById('adminStripeStatus').style.color = "#ff4757";
-                document.getElementById('adminStripeStatus').innerText = "❌ Remplis tous les champs administrateur.";
+        function saveAdminBanking() {
+            let iban = document.getElementById('adminIbanInput').value.trim();
+            let name = document.getElementById('adminNameInput').value.trim();
+            if (!iban || !name) {
+                document.getElementById('adminBankStatus').style.color = "#ff4757";
+                document.getElementById('adminBankStatus').innerText = "❌ Remplis ton IBAN et ton nom.";
                 return;
             }
-            localStorage.setItem('arkbern_admin_stripe', JSON.stringify({ key, card }));
-            document.getElementById('adminStripeStatus').style.color = "#2ed573";
-            document.getElementById('adminStripeStatus').innerText = "✔ Configuration enregistrée ! L'argent sera versé sur votre compte administrateur.";
+            localStorage.setItem('arkbern_admin_banking', JSON.stringify({ iban, name }));
+            document.getElementById('adminBankStatus').style.color = "#2ed573";
+            document.getElementById('adminBankStatus').innerText = "✔ Coordonnées bancaires enregistrées pour recevoir l'argent des ventes !";
         }
 
-        function loadAdminStripeSettings() {
-            let saved = JSON.parse(localStorage.getItem('arkbern_admin_stripe'));
+        function loadAdminBanking() {
+            let saved = JSON.parse(localStorage.getItem('arkbern_admin_banking'));
             if (saved) {
-                document.getElementById('adminStripeKey').value = saved.key;
-                document.getElementById('adminPayoutCard').value = saved.card;
-                document.getElementById('adminStripeStatus').innerText = "✔ Compte administrateur lié pour les versements.";
+                document.getElementById('adminIbanInput').value = saved.iban;
+                document.getElementById('adminNameInput').value = saved.name;
+                document.getElementById('adminBankStatus').innerText = "✔ Compte admin lié (IBAN configuré).";
             }
         }
 
@@ -640,18 +632,21 @@
             }
         }
 
-        function checkoutOrder() {
-            let savedCard = JSON.parse(localStorage.getItem('arkbern_saved_card'));
+        function checkoutOrderDirect() {
             let errorBox = document.getElementById('checkoutError');
-
-            if (!savedCard) {
-                errorBox.innerText = "❌ Impossible de payer : veuillez d'abord enregistrer vos informations de carte dans l'onglet 'Paramètres & Compte' !";
-                switchPage('parametres');
-                return;
-            }
 
             if (cart.length === 0) {
                 errorBox.innerText = "❌ Votre panier est vide.";
+                return;
+            }
+
+            let cardName = document.getElementById('checkoutCardName').value.trim();
+            let cardNumber = document.getElementById('checkoutCardNumber').value.trim();
+            let cardExp = document.getElementById('checkoutCardExp').value.trim();
+            let cardCvc = document.getElementById('checkoutCardCvc').value.trim();
+
+            if (!cardName || cardNumber.length < 12 || !cardExp || !cardCvc) {
+                errorBox.innerText = "❌ Veuillez remplir correctement toutes les informations de carte bancaire.";
                 return;
             }
 
@@ -681,7 +676,7 @@
                 installments: installments,
                 shipping: { name, address, city, relay },
                 status: "Préparation du colis",
-                messages: [{ sender: "Vendeur", text: "Bonjour ! Merci pour votre commande. Je prépare votre colis pour le point relais." }]
+                messages: [{ sender: "Vendeur", text: "Bonjour ! Merci pour votre achat direct sur le site. Je prépare votre colis pour le point relais." }]
             };
 
             orders.push(newOrder);
@@ -692,7 +687,7 @@
             displayCart();
             displayOrders();
 
-            alert("🎉 Commande validée ! L'argent de la vente a bien été envoyé vers le compte administrateur.");
+            alert("🎉 Paiement validé sur le site ! La commande a été enregistrée et transmise à l'administrateur.");
             switchPage('suivi');
         }
 
@@ -924,47 +919,6 @@
             });
 
             displayProducts(filtered);
-        }
-
-        function saveCard() {
-            let name = document.getElementById('cardName').value.trim();
-            let number = document.getElementById('cardNumber').value.trim();
-            let exp = document.getElementById('cardExp').value.trim();
-            let cvc = document.getElementById('cardCvc').value.trim();
-
-            if (number.length < 12 || !name) {
-                document.getElementById('cardStatus').innerText = "❌ Informations de carte incomplètes.";
-                return;
-            }
-
-            let maskedNumber = "•••• •••• •••• " + number.slice(-4);
-            let cardData = { name, maskedNumber, exp, cvc };
-
-            localStorage.setItem('arkbern_saved_card', JSON.stringify(cardData));
-            document.getElementById('cardStatus').style.color = "#2ed573";
-            document.getElementById('cardStatus').innerText = "✔ Carte enregistrée avec succès !";
-            loadCardInfo();
-        }
-
-        function deleteCard() {
-            localStorage.removeItem('arkbern_saved_card');
-            document.getElementById('cardStatus').style.color = "#ff4757";
-            document.getElementById('cardStatus').innerText = "🗑️ Carte supprimée.";
-            document.getElementById('cardName').value = "";
-            document.getElementById('cardNumber').value = "";
-            document.getElementById('cardExp').value = "";
-            document.getElementById('cardCvc').value = "";
-            loadCardInfo();
-        }
-
-        function loadCardInfo() {
-            let cardInfoBox = document.getElementById('savedCardInfo');
-            let savedCard = JSON.parse(localStorage.getItem('arkbern_saved_card'));
-            if (savedCard) {
-                cardInfoBox.innerHTML = `💳 Carte enregistrée : <strong>${savedCard.maskedNumber}</strong>`;
-            } else {
-                cardInfoBox.innerHTML = "Aucune carte enregistrée.";
-            }
         }
 
         function displayCoupons() {
