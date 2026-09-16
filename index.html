@@ -209,7 +209,7 @@
             padding: 10px 0;
         }
         
-        /* STYLE DU BORDEREAU PRO POUR IMPRESSION */
+        /* STYLE DU VRAI BORDEREAU PRO POUR IMPRESSION */
         #printArea {
             display: none;
         }
@@ -433,7 +433,7 @@
         </div>
     </section>
 
-    <!-- BORDEREAU D'EXPEDITION PRO AVEC DEUX QR CODES -->
+    <!-- BORDEREAU D'EXPEDITION PRO AVEC VRAIS QR CODES CHARGÉS -->
     <div id="printArea" style="background: white; color: black; padding: 25px; font-family: Arial, sans-serif; width: 100%; max-width: 600px; margin: 0 auto; border: 2px dashed #000;">
         <div style="display: flex; justify-content: space-between; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px;">
             <div>
@@ -449,11 +449,11 @@
         <!-- BLOC QR CODES (SITE + SUIVI COLIS) -->
         <div style="display: flex; justify-content: space-around; background: #f9f9f9; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; text-align: center;">
             <div>
-                <img id="qrCodeSite" src="" alt="QR Site" style="width: 80px; height: 80px;">
+                <img id="qrCodeSite" src="" alt="QR Site" style="width: 90px; height: 90px; display: block; margin: 0 auto;">
                 <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour aller sur le site</div>
             </div>
             <div>
-                <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 80px; height: 80px;">
+                <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 90px; height: 90px; display: block; margin: 0 auto;">
                 <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour Mondial Relay</div>
             </div>
         </div>
@@ -860,13 +860,21 @@
                 itemsListUl.innerHTML += `<li>${i.name} - ${i.finalPrice} €</li>`;
             });
 
+            // URLs cibles pour les QR codes
             let siteUrl = window.location.href.split('#')[0];
             let mondialRelayUrl = "https://www.mondialrelay.fr/suivi-de-colis/";
 
-            document.getElementById('qrCodeSite').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(siteUrl)}`;
-            document.getElementById('qrCodeRelay').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(mondialRelayUrl)}`;
+            // Utilisation d'un service de génération de QR code stable et immédiat
+            let qrSiteImg = document.getElementById('qrCodeSite');
+            let qrRelayImg = document.getElementById('qrCodeRelay');
 
-            window.print();
+            qrSiteImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(siteUrl);
+            qrRelayImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(mondialRelayUrl);
+
+            // Attendre une fraction de seconde pour que les images se chargent avant d'ouvrir la fenêtre d'impression
+            setTimeout(() => {
+                window.print();
+            }, 500);
         }
 
         function displayProducts(filteredList = products) {
