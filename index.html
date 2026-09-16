@@ -180,7 +180,7 @@
             border-radius: 8px;
             margin-bottom: 25px;
         }
-        .admin-box input, .admin-box select, .admin-box textarea, .settings-card input, .cart-card select {
+        .admin-box input, .admin-box select, .admin-box textarea, .settings-card input, .cart-card select, .cart-card input {
             display: block;
             width: 100%;
             margin: 10px 0;
@@ -191,13 +191,13 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
-        .coupon-item {
+        .coupon-item, .order-item-box {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: #2a2a2a;
             border-left: 4px solid #ff4757;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
             border-radius: 4px;
         }
@@ -208,12 +208,28 @@
             border-bottom: 1px solid #333;
             padding: 10px 0;
         }
+        /* Style pour le bordereau d'impression */
+        #printArea {
+            display: none;
+            background: white;
+            color: black;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
     <div class="top-banner">
-        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement direct sécurisé en 1x ou 2x - France 🇫🇷 🔥</marquee>
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Paiement sécurisé avec Point Relais et Bordereau - France 🇫🇷 🔥</marquee>
     </div>
 
     <header class="navbar">
@@ -221,7 +237,8 @@
         <nav>
             <a onclick="switchPage('presentation')">Présentation</a>
             <a onclick="switchPage('shop')">Boutique</a>
-            <a onclick="switchPage('panier')">Mon Panier 🛒</a>
+            <a onclick="switchPage('panier')">Panier 🛒</a>
+            <a onclick="switchPage('suivi')">Suivi & Commandes 📦</a>
             <a onclick="switchPage('aide')">Aide</a>
             <a onclick="switchPage('parametres')">Paramètres & Compte</a>
         </nav>
@@ -231,7 +248,7 @@
     <section id="presentation" class="page-content active">
         <div class="hero-section">
             <h1>Bienvenue sur ARKBERN SHOP</h1>
-            <p>La référence en France pour retrouver les meilleurs articles high-tech, vêtements et accessoires. Paiement direct et sécurisé sans redirection !</p>
+            <p>La référence en France pour vos achats high-tech et vêtements. Paiement sécurisé par carte, choix du Point Relais et bordereau d'expédition inclus !</p>
             
             <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
             <div class="promo-preview" id="promoGrid"></div>
@@ -242,7 +259,6 @@
     <section id="shop" class="page-content">
         <h2 style="text-align:center;">Notre Boutique</h2>
 
-        <!-- Espace Admin protégé -->
         <div id="adminContainer" style="display: none;">
             <div class="admin-box">
                 <h3>➕ Ajouter un nouvel article</h3>
@@ -255,13 +271,13 @@
                 </select>
                 <textarea id="pDesc" placeholder="Description de l'article"></textarea>
                 
-                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Options de Promotion (Facultatif) :</label>
+                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Options de Promotion :</label>
                 <select id="promoType">
                     <option value="none">Aucune promotion</option>
                     <option value="percent">Réduction en Pourcentage (%)</option>
                     <option value="euro">Réduction en Euros (€)</option>
                 </select>
-                <input type="number" id="promoValue" placeholder="Valeur de la promo (ex: 20 pour 20% ou 10 pour 10€)">
+                <input type="number" id="promoValue" placeholder="Valeur de la promo (ex: 20 ou 10)">
 
                 <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Image de l'article :</label>
                 <input type="file" id="pImage" accept="image/*">
@@ -271,7 +287,7 @@
             <div class="admin-box">
                 <h3>🎟️ Gestion des Codes Promo</h3>
                 <input type="text" id="newCouponCode" placeholder="Code (ex: ETE2026)">
-                <input type="text" id="newCouponDesc" placeholder="Description (ex: -15% sur tout)">
+                <input type="text" id="newCouponDesc" placeholder="Description (-15%)">
                 <button onclick="addCoupon()" style="margin-top: 10px;">Créer un code promo</button>
             </div>
         </div>
@@ -290,9 +306,9 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- PAGE 3 : PANIER & PAIEMENT DIRECT -->
+    <!-- PAGE 3 : PANIER & VALIDATION -->
     <section id="panier" class="page-content">
-        <h2>Mon Panier & Paiement Direct</h2>
+        <h2>Mon Panier & Validation de Commande</h2>
         <div class="cart-card">
             <h3>🛒 Articles sélectionnés</h3>
             <div id="cartItemsContainer">
@@ -308,11 +324,36 @@
             </select>
             <p id="installmentInfo" style="font-size: 13px; color: #2ed573; margin-top: 5px;"></p>
 
-            <button onclick="checkoutDirect()" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; background-color: #2ed573;">Payer directement en un clic 🚀</button>
+            <h4 style="margin-top: 20px;">📍 Adresse & Point Relais de Livraison :</h4>
+            <input type="text" id="shipName" placeholder="Nom et Prénom">
+            <input type="text" id="shipAddress" placeholder="Adresse postale (ex: 12 rue de la Paix)">
+            <input type="text" id="shipCity" placeholder="Ville et Code Postal (ex: 80000 Amiens)">
+            <input type="text" id="shipRelay" placeholder="Nom ou référence du Point Relais choisi (ex: Mondial Relay - Tabac de la Gare)">
+
+            <button onclick="checkoutOrder()" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; background-color: #2ed573;">Valider et Payer l'achat 🚀</button>
+            <p id="checkoutError" style="color: #ff4757; font-size: 13px; margin-top: 10px; text-align: center;"></p>
         </div>
     </section>
 
-    <!-- PAGE 4 : AIDE -->
+    <!-- PAGE 4 : SUIVI & COMMANDES (CHAT & BORDEREAU) -->
+    <section id="suivi" class="page-content">
+        <h2>Suivi des Commandes & Chat Vendeur</h2>
+        <div class="settings-card">
+            <h3>📦 Vos Achats en cours</h3>
+            <div id="ordersListContainer">
+                <p style="color: #aaa; text-align: center;">Aucune commande validée pour le moment.</p>
+            </div>
+        </div>
+
+        <div class="settings-card" id="chatSection" style="display: none;">
+            <h3>💬 Discussion avec le Vendeur (<span id="chatOrderTitle"></span>)</h3>
+            <div id="chatMessages" style="background: #111; border: 1px solid #444; height: 180px; overflow-y: auto; padding: 10px; border-radius: 5px; margin-bottom: 10px;"></div>
+            <input type="text" id="chatInput" placeholder="Écrire un message au vendeur...">
+            <button onclick="sendMessage()" style="margin-top: 5px;">Envoyer le message</button>
+        </div>
+    </section>
+
+    <!-- PAGE 5 : AIDE -->
     <section id="aide" class="page-content">
         <h2>Centre d'Aide</h2>
         <div class="settings-card">
@@ -320,7 +361,7 @@
         </div>
     </section>
 
-    <!-- PAGE 5 : PARAMETRES & COMPTE -->
+    <!-- PAGE 6 : PARAMETRES & COMPTE -->
     <section id="parametres" class="page-content">
         <h2>Paramètres & Compte</h2>
 
@@ -351,7 +392,7 @@
         </div>
 
         <div class="settings-card">
-            <h3>💳 Enregistrer ses informations de carte</h3>
+            <h3>💳 Enregistrer ses informations de carte (OBLIGATOIRE POUR PAYER)</h3>
             <div id="savedCardInfo" style="margin-bottom: 15px; font-size: 14px; color: #aaa;">Aucune carte enregistrée.</div>
             <input type="text" id="cardName" placeholder="Nom sur la carte">
             <input type="text" id="cardNumber" placeholder="Numéro de carte (16 chiffres)">
@@ -380,6 +421,24 @@
         </div>
     </section>
 
+    <!-- BORDEREAU D'EXPEDITION CACHÉ POUR IMPRESSION -->
+    <div id="printArea">
+        <h2 style="border-bottom: 2px solid black; padding-bottom: 10px;">📦 BORDEREAU D'EXPÉDITION - ARKBERN SHOP</h2>
+        <p><strong>N° de Commande :</strong> <span id="printOrderId"></span></p>
+        <p><strong>Date :</strong> <span id="printDate"></span></p>
+        <hr>
+        <h3>DESTINATAIRE (Point Relais / Client) :</h3>
+        <p><strong>Nom :</strong> <span id="printName"></span></p>
+        <p><strong>Adresse :</strong> <span id="printAddress"></span></p>
+        <p><strong>Ville :</strong> <span id="printCity"></span></p>
+        <p style="background: #eee; padding: 10px;"><strong>Point Relais :</strong> <span id="printRelay"></span></p>
+        <hr>
+        <h3>ARTICLES À EXPÉDIER :</h3>
+        <ul id="printItemsList"></ul>
+        <hr>
+        <p style="text-align: center; margin-top: 40px; font-size: 12px;">À coller visiblement sur le colis avant de le déposer en point de dépôt officiel. Merci !</p>
+    </div>
+
     <script>
         function switchPage(pageId) {
             let pages = document.querySelectorAll('.page-content');
@@ -394,6 +453,7 @@
 
         let favorites = JSON.parse(localStorage.getItem('arkbern_favorites')) || [];
         let cart = JSON.parse(localStorage.getItem('arkbern_cart')) || [];
+        let orders = JSON.parse(localStorage.getItem('arkbern_orders')) || [];
 
         let coupons = JSON.parse(localStorage.getItem('arkbern_coupons')) || [
             { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" },
@@ -404,6 +464,7 @@
         document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
 
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
+        let activeChatOrderId = null;
 
         function updateAuthUI() {
             let adminBox = document.getElementById('adminContainer');
@@ -432,6 +493,7 @@
             displayProducts();
             displayCoupons();
             displayCart();
+            displayOrders();
             loadCardInfo();
         }
 
@@ -546,12 +608,33 @@
             }
         }
 
-        function checkoutDirect() {
-            if (cart.length === 0) {
-                alert("Votre panier est vide !");
+        function checkoutOrder() {
+            let savedCard = JSON.parse(localStorage.getItem('arkbern_saved_card'));
+            let errorBox = document.getElementById('checkoutError');
+
+            // VERIFICATION CARTE BANCAIRE OBLIGATOIRE
+            if (!savedCard) {
+                errorBox.innerText = "❌ Impossible de payer : veuillez d'abord enregistrer vos informations de carte dans l'onglet 'Paramètres & Compte' !";
+                switchPage('parametres');
                 return;
             }
 
+            if (cart.length === 0) {
+                errorBox.innerText = "❌ Votre panier est vide.";
+                return;
+            }
+
+            let name = document.getElementById('shipName').value.trim();
+            let address = document.getElementById('shipAddress').value.trim();
+            let city = document.getElementById('shipCity').value.trim();
+            let relay = document.getElementById('shipRelay').value.trim();
+
+            if (!name || !address || !city || !relay) {
+                errorBox.innerText = "❌ Veuillez remplir tous les champs de livraison (Nom, Adresse, Ville et Point Relais).";
+                return;
+            }
+
+            errorBox.innerText = "";
             let total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
             let installments = document.getElementById('paymentInstallments').value;
 
@@ -559,18 +642,111 @@
             localStorage.setItem('arkbern_spent', totalSpentVal);
             document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
 
-            if (installments === "2") {
-                let half = (total / 2).toFixed(2);
-                alert(`🎉 Commande validée avec succès en 2 fois !\n\nPremière échéance payée : ${half} €\nSeconde échéance de ${half} € prélevée le mois prochain.\n\nMerci pour votre achat sur ARKBERN SHOP !`);
-            } else {
-                alert(`🎉 Commande validée avec succès !\n\nMontant total payé : ${total.toFixed(2)} €\n\nMerci pour votre achat sur ARKBERN SHOP !`);
-            }
+            let newOrder = {
+                id: 'CMD-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleDateString('fr-FR'),
+                items: [...cart],
+                total: total,
+                installments: installments,
+                shipping: { name, address, city, relay },
+                status: "Préparation du colis",
+                messages: [{ sender: "Vendeur", text: "Bonjour ! Merci pour votre commande. Je prépare votre colis pour le point relais." }]
+            };
 
-            // Vider le panier après achat
+            orders.push(newOrder);
+            localStorage.setItem('arkbern_orders', JSON.stringify(orders));
+
             cart = [];
             localStorage.setItem('arkbern_cart', JSON.stringify(cart));
             displayCart();
-            switchPage('shop');
+            displayOrders();
+
+            alert("🎉 Commande validée et payée avec succès via votre carte enregistrée ! Retrouvez le suivi et votre bordereau dans l'onglet 'Suivi & Commandes'.");
+            switchPage('suivi');
+        }
+
+        function displayOrders() {
+            let container = document.getElementById('ordersListContainer');
+            container.innerHTML = "";
+
+            if (orders.length === 0) {
+                container.innerHTML = `<p style="color: #aaa; text-align: center;">Aucune commande validée pour le moment.</p>`;
+                return;
+            }
+
+            orders.forEach((ord, index) => {
+                let itemsNames = ord.items.map(i => i.name).join(', ');
+                container.innerHTML += `
+                    <div class="order-item-box" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div style="width: 100%; display: flex; justify-content: space-between;">
+                            <strong>${ord.id} (${ord.date})</strong>
+                            <span style="color: #2ed573;">Statut : ${ord.status}</span>
+                        </div>
+                        <div style="font-size: 13px; color: #ccc;">Articles : ${itemsNames}</div>
+                        <div style="font-size: 13px; color: #aaa;">Point Relais : ${ord.shipping.relay} (${ord.shipping.city})</div>
+                        <div style="display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                            <button onclick="openChat(${index})" style="background-color: #0984e3; font-size: 12px; padding: 6px 12px;">💬 Discuter avec le vendeur</button>
+                            <button onclick="printBordereau(${index})" style="background-color: #e1b12c; color: black; font-size: 12px; padding: 6px 12px;">🖨️ Imprimer le Bordereau Vendeur</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openChat(index) {
+            activeChatOrderId = index;
+            let ord = orders[index];
+            document.getElementById('chatSection').style.display = 'block';
+            document.getElementById('chatOrderTitle').innerText = ord.id;
+            renderMessages();
+        }
+
+        function renderMessages() {
+            let container = document.getElementById('chatMessages');
+            container.innerHTML = "";
+            let ord = orders[activeChatOrderId];
+
+            ord.messages.forEach(m => {
+                container.innerHTML += `<div style="margin-bottom: 8px;"><strong style="color: ${m.sender === 'Vendeur' ? '#ff4757' : '#2ed573'};">${m.sender} :</strong> ${m.text}</div>`;
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendMessage() {
+            let input = document.getElementById('chatInput');
+            let text = input.value.trim();
+            if (!text || activeChatOrderId === null) return;
+
+            orders[activeChatOrderId].messages.push({ sender: "Moi", text: text });
+            input.value = "";
+            renderMessages();
+
+            // Simulation de réponse automatique du vendeur après 1 seconde
+            setTimeout(() => {
+                orders[activeChatOrderId].messages.push({ sender: "Vendeur", text: "Bien reçu ! Je m'occupe de déposer ça au point relais dès que possible." });
+                localStorage.setItem('arkbern_orders', JSON.stringify(orders));
+                renderMessages();
+            }, 1000);
+
+            localStorage.setItem('arkbern_orders', JSON.stringify(orders));
+        }
+
+        function printBordereau(index) {
+            let ord = orders[index];
+            document.getElementById('printOrderId').innerText = ord.id;
+            document.getElementById('printDate').innerText = ord.date;
+            document.getElementById('printName').innerText = ord.shipping.name;
+            document.getElementById('printAddress').innerText = ord.shipping.address;
+            document.getElementById('printCity').innerText = ord.shipping.city;
+            document.getElementById('printRelay').innerText = ord.shipping.relay;
+
+            let itemsListUl = document.getElementById('printItemsList');
+            itemsListUl.innerHTML = "";
+            ord.items.forEach(i => {
+                itemsListUl.innerHTML += `<li>${i.name} - ${i.finalPrice} €</li>`;
+            });
+
+            window.print();
         }
 
         function displayProducts(filteredList = products) {
@@ -737,7 +913,7 @@
 
             localStorage.setItem('arkbern_saved_card', JSON.stringify(cardData));
             document.getElementById('cardStatus').style.color = "#2ed573";
-            document.getElementById('cardStatus').innerText = "✔ Carte enregistrée !";
+            document.getElementById('cardStatus').innerText = "✔ Carte enregistrée avec succès !";
             loadCardInfo();
         }
 
