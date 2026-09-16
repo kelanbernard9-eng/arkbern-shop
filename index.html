@@ -208,8 +208,6 @@
             border-bottom: 1px solid #333;
             padding: 10px 0;
         }
-        
-        /* STYLE DU VRAI BORDEREAU PRO POUR IMPRESSION */
         #printArea {
             display: none;
         }
@@ -246,40 +244,27 @@
         </nav>
     </header>
 
-    <!-- PAGE 1 : PRESENTATION -->
     <section id="presentation" class="page-content active">
         <div class="hero-section">
             <h1>Bienvenue sur ARKBERN SHOP</h1>
             <p>La référence en France pour vos achats high-tech et vêtements. Paiement direct sécurisé sur le site, choix du Point Relais et bordereau d'expédition inclus !</p>
-            
             <h3 style="margin-top: 40px; color: #ff4757;">🔥 Articles en Promo du Moment</h3>
             <div class="promo-preview" id="promoGrid"></div>
         </div>
     </section>
 
-    <!-- PAGE 2 : BOUTIQUE -->
     <section id="shop" class="page-content">
         <h2 style="text-align:center;">Notre Boutique</h2>
 
         <div id="adminContainer" style="display: none;">
-            <!-- BOUTON DE RÉINITIALISATION FORCÉE POUR LE TÉLÉPHONE -->
-            <div class="admin-box" style="border-color: #ffa502; background: #221a00;">
-                <h3>⚠️ MAINTENANCE / RESET MOBILE</h3>
-                <p style="font-size: 13px; color: #ccc;">Si vos articles ne se mettent pas à jour sur votre téléphone, cliquez ici pour effacer les vieux bugs en cache :</p>
-                <button onclick="forceResetShopCache()" style="background-color: #ffa502; color: black; font-weight: bold; width: 100%;">🔄 Forcer la mise à jour des articles</button>
-            </div>
-
             <div class="admin-box" style="border-color: #2ed573;">
                 <h3>👑 TRESORERIE ADMIN - VIREMENT BANCAIRE</h3>
-                <p style="font-size: 13px; color: #aaa;">Argent disponible dans la cagnotte :</p>
                 <div style="font-size: 24px; font-weight: bold; color: #2ed573; margin: 10px 0;" id="adminTotalEarnings">0.00 €</div>
-                
-                <input type="text" id="adminIbanInput" placeholder="Ton IBAN (ex: FR76 XXXX XXXX XXXX XXXX XXXX XXX)">
-                <input type="text" id="adminNameInput" placeholder="Nom du titulaire (ex: Bernard Kelan)">
-                
+                <input type="text" id="adminIbanInput" placeholder="Ton IBAN">
+                <input type="text" id="adminNameInput" placeholder="Nom du titulaire">
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
                     <button onclick="saveAdminBanking()" style="background-color: #2ed573; color: black; font-weight: bold; flex: 1;">Enregistrer l'IBAN 💶</button>
-                    <button onclick="transferToMyBank()" style="background-color: #0984e3; color: white; font-weight: bold; flex: 1;">Envoyer l'argent sur mon compte 🚀</button>
+                    <button onclick="transferToMyBank()" style="background-color: #0984e3; color: white; font-weight: bold; flex: 1;">Envoyer l'argent 🚀</button>
                 </div>
                 <button onclick="resetAdminEarnings()" style="background-color: #ff3838; color: white; margin-top: 10px; width: 100%; font-size: 12px;">Remettre la cagnotte à 0 €</button>
                 <p id="adminBankStatus" style="font-size: 13px; margin-top: 8px; color: #2ed573;"></p>
@@ -295,16 +280,12 @@
                     <option value="accessoire">Accessoires</option>
                 </select>
                 <textarea id="pDesc" placeholder="Description de l'article"></textarea>
-                
-                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Options de Promotion :</label>
                 <select id="promoType">
                     <option value="none">Aucune promotion</option>
                     <option value="percent">Réduction en Pourcentage (%)</option>
                     <option value="euro">Réduction en Euros (€)</option>
                 </select>
-                <input type="number" id="promoValue" placeholder="Valeur de la promo (ex: 20 ou 10)">
-
-                <label style="font-size:13px; color:#aaa; margin-top:10px; display:block;">Image de l'article :</label>
+                <input type="number" id="promoValue" placeholder="Valeur de la promo">
                 <input type="file" id="pImage" accept="image/*">
                 <button onclick="addProduct()">Publier l'article</button>
             </div>
@@ -331,7 +312,6 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- PAGE 3 : PANIER & VALIDATION DIRECTE -->
     <section id="panier" class="page-content">
         <h2>Mon Panier & Paiement Sécurisé ARKBERN</h2>
         <div class="cart-card">
@@ -349,67 +329,61 @@
             </select>
             <p id="installmentInfo" style="font-size: 13px; color: #2ed573; margin-top: 5px;"></p>
 
-            <h4 style="margin-top: 20px;">💳 Paiement direct sur le site (Sécurisé Interne)</h4>
-            <input type="text" id="checkoutCardName" placeholder="Nom du titulaire de la carte">
-            <input type="text" id="checkoutCardNumber" placeholder="Numéro de carte (16 chiffres)" maxlength="19">
+            <h4 style="margin-top: 20px;">💳 Paiement direct sur le site</h4>
+            <input type="text" id="checkoutCardName" placeholder="Nom du titulaire">
+            <input type="text" id="checkoutCardNumber" placeholder="Numéro de carte" maxlength="19">
             <div style="display: flex; gap: 10px;">
                 <input type="text" id="checkoutCardExp" placeholder="MM/AA" maxlength="5">
                 <input type="password" id="checkoutCardCvc" placeholder="CVC" maxlength="4">
             </div>
 
-            <h4 style="margin-top: 20px;">📍 Adresse & Point Relais de Livraison :</h4>
+            <h4 style="margin-top: 20px;">📍 Adresse & Point Relais :</h4>
             <input type="text" id="shipName" placeholder="Nom et Prénom">
-            <input type="text" id="shipAddress" placeholder="Adresse postale (ex: 12 rue de la Paix)">
-            <input type="text" id="shipCity" placeholder="Ville et Code Postal (ex: 80000 Amiens)">
-            <input type="text" id="shipRelay" placeholder="Nom ou référence du Point Relais choisi (ex: Mondial Relay - Tabac de la Gare)">
+            <input type="text" id="shipAddress" placeholder="Adresse postale">
+            <input type="text" id="shipCity" placeholder="Ville et Code Postal">
+            <input type="text" id="shipRelay" placeholder="Nom du Point Relais">
 
             <button onclick="checkoutOrderDirect()" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; background-color: #2ed573; color: black; font-weight: bold;">Payer et valider la commande 🚀</button>
             <p id="checkoutError" style="color: #ff4757; font-size: 13px; margin-top: 10px; text-align: center;"></p>
         </div>
     </section>
 
-    <!-- PAGE 4 : SUIVI & COMMANDES -->
     <section id="suivi" class="page-content">
         <h2>Suivi des Commandes & Chat Vendeur</h2>
         <div class="settings-card">
             <h3>📦 Vos Achats en cours</h3>
             <div id="ordersListContainer">
-                <p style="color: #aaa; text-align: center;">Aucune commande validée pour le moment.</p>
+                <p style="color: #aaa; text-align: center;">Aucune commande validée.</p>
             </div>
         </div>
 
         <div class="settings-card" id="chatSection" style="display: none;">
             <h3>💬 Discussion avec le Vendeur (<span id="chatOrderTitle"></span>)</h3>
             <div id="chatMessages" style="background: #111; border: 1px solid #444; height: 180px; overflow-y: auto; padding: 10px; border-radius: 5px; margin-bottom: 10px;"></div>
-            <input type="text" id="chatInput" placeholder="Écrire un message au vendeur...">
-            <button onclick="sendMessage()" style="margin-top: 5px;">Envoyer le message</button>
+            <input type="text" id="chatInput" placeholder="Écrire un message...">
+            <button onclick="sendMessage()" style="margin-top: 5px;">Envoyer</button>
         </div>
     </section>
 
-    <!-- PAGE 5 : AIDE -->
     <section id="aide" class="page-content">
         <h2>Centre d'Aide</h2>
         <div class="settings-card">
-            <p style="color: #aaa; text-align: center;">Pour toute question, contactez-nous à kelanbernard9@gmail.com.</p>
+            <p style="color: #aaa; text-align: center;">Contact : kelanbernard9@gmail.com</p>
         </div>
     </section>
 
-    <!-- PAGE 6 : PARAMETRES & COMPTE -->
     <section id="parametres" class="page-content">
         <h2>Paramètres & Compte</h2>
-
         <div class="settings-card">
-            <h3>📍 Informations de la Boutique</h3>
+            <h3>📍 Infos Boutique</h3>
             <p><strong>Pays :</strong> France <sub>FR</sub></p>
-            <p><strong>Email officiel :</strong> kelanbernard9@gmail.com</p>
-            <p><strong>Téléphone :</strong> 07 80 13 01 72</p>
+            <p><strong>Email :</strong> kelanbernard9@gmail.com</p>
         </div>
 
         <div class="settings-card" id="authSection">
             <h3 id="authTitle">🔐 Connexion ou Inscription</h3>
             <input type="email" id="userEmailInput" placeholder="Ton adresse email">
             <input type="password" id="userPassInput" placeholder="Ton mot de passe">
-            
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="handleLogin()">Se connecter</button>
                 <button onclick="handleRegister()" style="background-color: #333;">Créer un compte</button>
@@ -425,22 +399,20 @@
         </div>
 
         <div class="settings-card">
-            <h3>📊 Suivi de vos Dépenses (Client)</h3>
-            <p style="font-size: 18px;">Total de vos achats : <strong id="totalSpent" style="color: #ff4757;">0.00 €</strong></p>
+            <h3>📊 Suivi de vos Dépenses</h3>
+            <p style="font-size: 18px;">Total : <strong id="totalSpent" style="color: #ff4757;">0.00 €</strong></p>
         </div>
 
         <div class="settings-card">
-            <h3>🎟️ Codes de Réduction & Coupons</h3>
-            <input type="text" id="couponInput" placeholder="Entrez votre code promo ici">
-            <button onclick="applyCoupon()" style="margin-top: 10px;">Valider le code</button>
+            <h3>🎟️ Codes Promo</h3>
+            <input type="text" id="couponInput" placeholder="Entrez votre code promo">
+            <button onclick="applyCoupon()" style="margin-top: 10px;">Valider</button>
             <p id="couponMsg" style="font-size: 13px; margin-top: 10px;"></p>
-
-            <h4 style="margin-top: 20px;">Tous les coupons disponibles :</h4>
+            <h4 style="margin-top: 20px;">Disponibles :</h4>
             <div id="couponsListContainer"></div>
         </div>
     </section>
 
-    <!-- BORDEREAU D'EXPEDITION PRO AVEC CODE SUIVI ET QR CODES -->
     <div id="printArea" style="background: white; color: black; padding: 25px; font-family: Arial, sans-serif; width: 100%; max-width: 600px; margin: 0 auto; border: 2px dashed #000;">
         <div style="display: flex; justify-content: space-between; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px;">
             <div>
@@ -452,25 +424,20 @@
                 <div style="font-size: 12px;" id="printDate">--/--/----</div>
             </div>
         </div>
-
-        <!-- CODE DE SUIVI DU COLIS VISIBLE -->
         <div style="text-align: center; background: #f4f4f4; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc;">
-            <div style="font-size: 11px; font-weight: bold; color: #333;">CODE DE SUIVI OFFICIEL :</div>
+            <div style="font-size: 11px; font-weight: bold; color: #333;">CODE DE SUIVI :</div>
             <div style="font-family: monospace; font-size: 20px; font-weight: bold; color: #ff4757; margin-top: 3px;" id="printTrackingCode">MR-80000-ARKBERN</div>
         </div>
-
-        <!-- BLOC QR CODES (SITE + SUIVI COLIS DIRECT) -->
         <div style="display: flex; justify-content: space-around; background: #f9f9f9; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; text-align: center;">
             <div>
                 <img id="qrCodeSite" src="" alt="QR Site" style="width: 85px; height: 85px; display: block; margin: 0 auto;">
-                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Scanner pour aller sur le site</div>
+                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Site Web</div>
             </div>
             <div>
                 <img id="qrCodeRelay" src="" alt="QR Suivi" style="width: 85px; height: 85px; display: block; margin: 0 auto;">
-                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Suivi du colis (Mondial Relay)</div>
+                <div style="font-size: 10px; font-weight: bold; margin-top: 4px;">Suivi Colis</div>
             </div>
         </div>
-
         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
             <div style="flex: 1; border: 1px solid #000; padding: 10px;">
                 <h4 style="margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase; background: #000; color: #fff; padding: 4px;">Expéditeur :</h4>
@@ -484,37 +451,22 @@
                 <p style="margin: 3px 0; font-size: 11px;" id="printCity">Ville</p>
             </div>
         </div>
-
         <div style="background: #e2e8f0; border: 2px solid #000; padding: 12px; margin-bottom: 15px; text-align: center;">
-            <span style="font-size: 11px; display: block; font-weight: bold; text-transform: uppercase;">Point Relais de Livraison :</span>
+            <span style="font-size: 11px; display: block; font-weight: bold; text-transform: uppercase;">Point Relais :</span>
             <span style="font-size: 16px; font-weight: bold; color: #d63031;" id="printRelay">Nom du Point Relais</span>
         </div>
-
         <div style="border-top: 1px solid #000; padding-top: 10px;">
-            <h4 style="margin: 0 0 5px 0; font-size: 13px;">Articles contenus dans le colis :</h4>
+            <h4 style="margin: 0 0 5px 0; font-size: 13px;">Articles :</h4>
             <ul id="printItemsList" style="margin: 0; padding-left: 20px; font-size: 12px;"></ul>
-        </div>
-
-        <div style="text-align: center; margin-top: 20px; font-size: 11px; border-top: 1px dashed #000; padding-top: 8px;">
-            À imprimer et coller visiblement sur le dessus du colis avant dépôt en Point Relais. Merci !
         </div>
     </div>
 
     <script>
-        // VERSION SUPÉRIEURE POUR FORCER LE RESET DU CACHE MOBILE
-        const CURRENT_VERSION = "v2.5";
+        const CURRENT_VERSION = "v3.0";
         if (localStorage.getItem('arkbern_version') !== CURRENT_VERSION) {
             localStorage.removeItem('arkbern_products');
             localStorage.removeItem('arkbern_coupons');
             localStorage.setItem('arkbern_version', CURRENT_VERSION);
-        }
-
-        function forceResetShopCache() {
-            if (confirm("Voulez-vous vraiment réinitialiser la boutique et supprimer les anciens articles en cache ?")) {
-                localStorage.removeItem('arkbern_products');
-                localStorage.removeItem('arkbern_coupons');
-                location.reload();
-            }
         }
 
         function switchPage(pageId) {
@@ -523,25 +475,17 @@
             document.getElementById(pageId).classList.add('active');
         }
 
-        let products = JSON.parse(localStorage.getItem('arkbern_products')) || [
-            { id: 1, name: "Casque Gaming Pro", price: 49.99, finalPrice: 49.99, category: "electronique", desc: "Son immersif et micro HD.", image: "https://via.placeholder.com/220x140?text=Casque", hasPromo: false },
-            { id: 2, name: "Sweat ARKBERN", price: 35.00, finalPrice: 28.00, category: "vetement", desc: "100% coton confortable.", image: "https://via.placeholder.com/220x140?text=Sweat", hasPromo: true, promoText: "-20%" }
-        ];
-
+        let products = JSON.parse(localStorage.getItem('arkbern_products')) || [];
         let favorites = JSON.parse(localStorage.getItem('arkbern_favorites')) || [];
         let cart = JSON.parse(localStorage.getItem('arkbern_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('arkbern_orders')) || [];
-
         let coupons = JSON.parse(localStorage.getItem('arkbern_coupons')) || [
-            { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" },
-            { code: "LIVRAISONGRATUITE", desc: "Frais de port offerts dès 30€ d'achat." }
+            { code: "ARKBERN10", desc: "-10% de réduction sur votre première commande !" }
         ];
 
         let totalSpentVal = parseFloat(localStorage.getItem('arkbern_spent')) || 0;
         document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
-
         let adminEarningsVal = parseFloat(localStorage.getItem('arkbern_admin_earnings')) || 0;
-
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
         let activeChatOrderId = null;
 
@@ -580,14 +524,9 @@
         function saveAdminBanking() {
             let iban = document.getElementById('adminIbanInput').value.trim();
             let name = document.getElementById('adminNameInput').value.trim();
-            if (!iban || !name) {
-                document.getElementById('adminBankStatus').style.color = "#ff4757";
-                document.getElementById('adminBankStatus').innerText = "❌ Remplis ton IBAN et ton nom.";
-                return;
-            }
+            if (!iban || !name) return alert("Remplis ton IBAN et ton nom.");
             localStorage.setItem('arkbern_admin_banking', JSON.stringify({ iban, name }));
-            document.getElementById('adminBankStatus').style.color = "#2ed573";
-            document.getElementById('adminBankStatus').innerText = "✔ Coordonnées bancaires enregistrées !";
+            document.getElementById('adminBankStatus').innerText = "✔ IBAN enregistré !";
         }
 
         function loadAdminBanking() {
@@ -595,75 +534,53 @@
             if (saved) {
                 document.getElementById('adminIbanInput').value = saved.iban;
                 document.getElementById('adminNameInput').value = saved.name;
-                document.getElementById('adminBankStatus').innerText = "✔ Compte admin lié (IBAN configuré).";
+                document.getElementById('adminBankStatus').innerText = "✔ Compte admin lié.";
             }
         }
 
         function updateAdminEarningsDisplay() {
-            let earningsElement = document.getElementById('adminTotalEarnings');
-            if (earningsElement) {
-                earningsElement.innerText = adminEarningsVal.toFixed(2) + " €";
-            }
+            let el = document.getElementById('adminTotalEarnings');
+            if (el) el.innerText = adminEarningsVal.toFixed(2) + " €";
         }
 
         function transferToMyBank() {
             let saved = JSON.parse(localStorage.getItem('arkbern_admin_banking'));
-            if (!saved || !saved.iban) {
-                alert("❌ Veuillez d'abord enregistrer votre IBAN dans le champ ci-dessus avant d'effectuer le virement.");
-                return;
-            }
-
-            if (adminEarningsVal <= 0) {
-                alert("❌ Il n'y a aucun fond à transférer dans la cagnotte pour le moment.");
-                return;
-            }
-
-            let amountToTransfer = adminEarningsVal;
+            if (!saved || !saved.iban) return alert("Enregistre d'abord ton IBAN.");
+            if (adminEarningsVal <= 0) return alert("Aucun fond à transférer.");
+            let amount = adminEarningsVal;
             adminEarningsVal = 0;
             localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
             updateAdminEarningsDisplay();
-
-            alert(`🚀 Virement de ${amountToTransfer.toFixed(2)} € émis avec succès vers votre compte bancaire (${saved.iban}) ! L'argent arrivera sous peu.`);
+            alert(`🚀 Virement de ${amount.toFixed(2)} € émis vers ${saved.iban} !`);
         }
 
         function resetAdminEarnings() {
-            if (confirm("Voulez-vous réinitialiser le solde de la cagnotte administrateur à 0 € ?")) {
+            if (confirm("Remettre la cagnotte à 0 € ?")) {
                 adminEarningsVal = 0;
                 localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
                 updateAdminEarningsDisplay();
-                alert("✔ Cagnotte vidée avec succès.");
             }
         }
 
         function handleRegister() {
             let email = document.getElementById('userEmailInput').value.trim();
             let pass = document.getElementById('userPassInput').value.trim();
-            let msg = document.getElementById('authMsg');
-
-            if (!email || !pass) {
-                msg.style.color = "#ff4757";
-                msg.innerText = "❌ Remplis tous les champs.";
-                return;
-            }
+            if (!email || !pass) return alert("Remplis tous les champs.");
             localStorage.setItem('arkbern_user_account', JSON.stringify({ email, pass }));
-            msg.style.color = "#2ed573";
-            msg.innerText = "✔ Compte créé ! Tu peux te connecter.";
+            alert("✔ Compte créé ! Connecte-toi.");
         }
 
         function handleLogin() {
             let email = document.getElementById('userEmailInput').value.trim();
             let pass = document.getElementById('userPassInput').value.trim();
-            let msg = document.getElementById('authMsg');
             let savedAccount = JSON.parse(localStorage.getItem('arkbern_user_account'));
 
             if ((email === "kelanbernard9@gmail.com" && pass.length > 0) || (savedAccount && savedAccount.email === email && savedAccount.pass === pass)) {
                 currentUser = { email };
                 localStorage.setItem('arkbern_current_user', JSON.stringify(currentUser));
-                msg.innerText = "";
                 updateAuthUI();
             } else {
-                msg.style.color = "#ff4757";
-                msg.innerText = "❌ Email ou mot de passe incorrect.";
+                alert("❌ Email ou mot de passe incorrect.");
             }
         }
 
@@ -675,7 +592,7 @@
 
         function toggleFavorite(id) {
             if (favorites.includes(id)) {
-                favorites = favorites.filter(favId => favId !== id);
+                favorites = favorites.filter(f => f !== id);
             } else {
                 favorites.push(id);
             }
@@ -689,7 +606,7 @@
                 cart.push(item);
                 localStorage.setItem('arkbern_cart', JSON.stringify(cart));
                 displayCart();
-                alert(`✔ ${item.name} a été ajouté au panier !`);
+                alert(`✔ ${item.name} ajouté au panier !`);
             }
         }
 
@@ -703,81 +620,51 @@
             let container = document.getElementById('cartItemsContainer');
             let totalContainer = document.getElementById('cartTotalPrice');
             container.innerHTML = "";
-
             if (cart.length === 0) {
                 container.innerHTML = `<p style="color: #aaa; text-align: center;">Votre panier est vide.</p>`;
                 totalContainer.innerText = "0.00 €";
-                updateInstallmentDetails();
                 return;
             }
-
             let total = 0;
             cart.forEach((item, index) => {
                 total += item.finalPrice;
                 container.innerHTML += `
                     <div class="cart-item-row">
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            <span style="color: #2ed573; font-size: 14px;">${item.finalPrice} €</span>
-                        </div>
+                        <div><strong>${item.name}</strong><br><span style="color: #2ed573;">${item.finalPrice} €</span></div>
                         <button onclick="removeFromCart(${index})" class="btn-delete" style="margin:0;">Retirer</button>
                     </div>
                 `;
             });
             totalContainer.innerText = total.toFixed(2) + " €";
-            updateInstallmentDetails();
         }
 
         function updateInstallmentDetails() {
             let installments = document.getElementById('paymentInstallments').value;
             let infoText = document.getElementById('installmentInfo');
             let total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
-
-            if (cart.length === 0) {
-                infoText.innerText = "";
-                return;
-            }
-
+            if (cart.length === 0) { infoText.innerText = ""; return; }
             if (installments === "2") {
-                let half = (total / 2).toFixed(2);
-                infoText.innerText = `💳 Soit 2 paiements de ${half} € (1 aujourd'hui, 1 le mois prochain)`;
+                infoText.innerText = `💳 Soit 2 paiements de ${(total / 2).toFixed(2)} €`;
             } else {
-                infoText.innerText = `💳 Paiement unique de ${total.toFixed(2)} € aujourd'hui`;
+                infoText.innerText = `💳 Paiement unique de ${total.toFixed(2)} €`;
             }
         }
 
         function checkoutOrderDirect() {
-            let errorBox = document.getElementById('checkoutError');
-
-            if (cart.length === 0) {
-                errorBox.innerText = "❌ Votre panier est vide.";
-                return;
-            }
-
+            if (cart.length === 0) return alert("Votre panier est vide.");
             let cardName = document.getElementById('checkoutCardName').value.trim();
             let cardNumber = document.getElementById('checkoutCardNumber').value.trim();
             let cardExp = document.getElementById('checkoutCardExp').value.trim();
             let cardCvc = document.getElementById('checkoutCardCvc').value.trim();
-
-            if (!cardName || cardNumber.length < 12 || !cardExp || !cardCvc) {
-                errorBox.innerText = "❌ Veuillez remplir correctement toutes les informations de carte bancaire.";
-                return;
-            }
+            if (!cardName || cardNumber.length < 12 || !cardExp || !cardCvc) return alert("Vérifie les infos de carte.");
 
             let name = document.getElementById('shipName').value.trim();
             let address = document.getElementById('shipAddress').value.trim();
             let city = document.getElementById('shipCity').value.trim();
             let relay = document.getElementById('shipRelay').value.trim();
+            if (!name || !address || !city || !relay) return alert("Remplis toutes les infos de livraison.");
 
-            if (!name || !address || !city || !relay) {
-                errorBox.innerText = "❌ Veuillez remplir tous les champs de livraison (Nom, Adresse, Ville et Point Relais).";
-                return;
-            }
-
-            errorBox.innerText = "";
             let total = cart.reduce((sum, item) => sum + item.finalPrice, 0);
-            let installments = document.getElementById('paymentInstallments').value;
-
             totalSpentVal += total;
             localStorage.setItem('arkbern_spent', totalSpentVal);
             document.getElementById('totalSpent').innerText = totalSpentVal.toFixed(2) + " €";
@@ -786,41 +673,34 @@
             localStorage.setItem('arkbern_admin_earnings', adminEarningsVal);
             updateAdminEarningsDisplay();
 
-            let trackingNumber = 'MR-' + Math.floor(10000000 + Math.random() * 90000000);
-
             let newOrder = {
                 id: 'CMD-' + Math.floor(100000 + Math.random() * 900000),
-                tracking: trackingNumber,
+                tracking: 'MR-' + Math.floor(10000000 + Math.random() * 90000000),
                 date: new Date().toLocaleDateString('fr-FR'),
                 items: [...cart],
                 total: total,
-                installments: installments,
                 shipping: { name, address, city, relay },
                 status: "Préparation du colis",
-                messages: [{ sender: "Vendeur", text: "Bonjour ! Merci pour votre achat direct sur le site. Je prépare votre colis pour le point relais." }]
+                messages: [{ sender: "Vendeur", text: "Merci pour votre commande !" }]
             };
 
             orders.push(newOrder);
             localStorage.setItem('arkbern_orders', JSON.stringify(orders));
-
             cart = [];
             localStorage.setItem('arkbern_cart', JSON.stringify(cart));
             displayCart();
             displayOrders();
-
-            alert(`🎉 Paiement validé ! ${total.toFixed(2)} € ont été ajoutés à la trésorerie de la boutique.`);
+            alert("🎉 Paiement validé !");
             switchPage('suivi');
         }
 
         function displayOrders() {
             let container = document.getElementById('ordersListContainer');
             container.innerHTML = "";
-
             if (orders.length === 0) {
-                container.innerHTML = `<p style="color: #aaa; text-align: center;">Aucune commande validée pour le moment.</p>`;
+                container.innerHTML = `<p style="color: #aaa; text-align: center;">Aucune commande.</p>`;
                 return;
             }
-
             orders.forEach((ord, index) => {
                 let itemsNames = ord.items.map(i => i.name).join(', ');
                 container.innerHTML += `
@@ -830,11 +710,10 @@
                             <span style="color: #2ed573;">Statut : ${ord.status}</span>
                         </div>
                         <div style="font-size: 13px; color: #ccc;">Articles : ${itemsNames}</div>
-                        <div style="font-size: 13px; color: #aaa;">Point Relais : ${ord.shipping.relay} (${ord.shipping.city})</div>
-                        <div style="font-size: 13px; color: #ffa502;">Code de suivi : <strong>${ord.tracking || 'MR-80000-ARKBERN'}</strong></div>
-                        <div style="display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
-                            <button onclick="openChat(${index})" style="background-color: #0984e3; font-size: 12px; padding: 6px 12px;">💬 Discuter avec le vendeur</button>
-                            <button onclick="printBordereau(${index})" style="background-color: #e1b12c; color: black; font-size: 12px; padding: 6px 12px;">🖨️ Imprimer le Bordereau Vendeur</button>
+                        <div style="font-size: 13px; color: #aaa;">Point Relais : ${ord.shipping.relay}</div>
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <button onclick="openChat(${index})" style="background-color: #0984e3; font-size: 12px; padding: 6px 12px;">💬 Chat</button>
+                            <button onclick="printBordereau(${index})" style="background-color: #e1b12c; color: black; font-size: 12px; padding: 6px 12px;">🖨️ Imprimer</button>
                         </div>
                     </div>
                 `;
@@ -843,19 +722,16 @@
 
         function openChat(index) {
             activeChatOrderId = index;
-            let ord = orders[index];
             document.getElementById('chatSection').style.display = 'block';
-            document.getElementById('chatOrderTitle').innerText = ord.id;
+            document.getElementById('chatOrderTitle').innerText = orders[index].id;
             renderMessages();
         }
 
         function renderMessages() {
             let container = document.getElementById('chatMessages');
             container.innerHTML = "";
-            let ord = orders[activeChatOrderId];
-
-            ord.messages.forEach(m => {
-                container.innerHTML += `<div style="margin-bottom: 8px;"><strong style="color: ${m.sender === 'Vendeur' ? '#ff4757' : '#2ed573'};">${m.sender} :</strong> ${m.text}</div>`;
+            orders[activeChatOrderId].messages.forEach(m => {
+                container.innerHTML += `<div><strong>${m.sender} :</strong> ${m.text}</div>`;
             });
             container.scrollTop = container.scrollHeight;
         }
@@ -864,17 +740,9 @@
             let input = document.getElementById('chatInput');
             let text = input.value.trim();
             if (!text || activeChatOrderId === null) return;
-
             orders[activeChatOrderId].messages.push({ sender: "Moi", text: text });
             input.value = "";
             renderMessages();
-
-            setTimeout(() => {
-                orders[activeChatOrderId].messages.push({ sender: "Vendeur", text: "Bien reçu ! Je m'occupe de déposer ça au point relais dès que possible." });
-                localStorage.setItem('arkbern_orders', JSON.stringify(orders));
-                renderMessages();
-            }, 1000);
-
             localStorage.setItem('arkbern_orders', JSON.stringify(orders));
         }
 
@@ -886,26 +754,17 @@
             document.getElementById('printAddress').innerText = ord.shipping.address;
             document.getElementById('printCity').innerText = ord.shipping.city;
             document.getElementById('printRelay').innerText = ord.shipping.relay;
-            document.getElementById('printTrackingCode').innerText = ord.tracking || 'MR-80000-ARKBERN';
+            document.getElementById('printTrackingCode').innerText = ord.tracking;
 
             let itemsListUl = document.getElementById('printItemsList');
             itemsListUl.innerHTML = "";
-            ord.items.forEach(i => {
-                itemsListUl.innerHTML += `<li>${i.name} - ${i.finalPrice} €</li>`;
-            });
+            ord.items.forEach(i => { itemsListUl.innerHTML += `<li>${i.name} - ${i.finalPrice} €</li>`; });
 
             let siteUrl = window.location.href.split('#')[0];
-            let mondialRelayUrl = "https://www.mondialrelay.fr/suivi-de-colis/";
+            document.getElementById('qrCodeSite').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(siteUrl);
+            document.getElementById('qrCodeRelay').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent("https://www.mondialrelay.fr/suivi-de-colis/");
 
-            let qrSiteImg = document.getElementById('qrCodeSite');
-            let qrRelayImg = document.getElementById('qrCodeRelay');
-
-            qrSiteImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(siteUrl);
-            qrRelayImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(mondialRelayUrl);
-
-            setTimeout(() => {
-                window.print();
-            }, 500);
+            setTimeout(() => { window.print(); }, 500);
         }
 
         function displayProducts(filteredList = products) {
@@ -913,20 +772,16 @@
             let promoGrid = document.getElementById('promoGrid');
             grid.innerHTML = "";
             promoGrid.innerHTML = "";
-
             let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
 
-            filteredList.forEach((p) => {
-                let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer l'article</button>` : '';
+            filteredList.forEach(p => {
+                let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteProduct(${p.id})">Supprimer</button>` : '';
                 let isFav = favorites.includes(p.id);
-                let favBtnClass = isFav ? "btn-fav active" : "btn-fav";
-                let favBtnText = isFav ? "❤️ Dans les favoris" : "🤍 Ajouter aux favoris";
-
                 let priceHTML = p.hasPromo 
                     ? `<div class="price-container"><span class="old-price">${p.price} €</span><span class="price">${p.finalPrice} €</span></div>`
                     : `<div class="price-container"><span class="price">${p.price} €</span></div>`;
 
-                let cardHTML = `
+                grid.innerHTML += `
                     <div class="product-card">
                         <img src="${p.image}" alt="${p.name}">
                         <h3>${p.name}</h3>
@@ -934,27 +789,8 @@
                         ${priceHTML}
                         <p class="desc">${p.desc}</p>
                         <button onclick="addToCart(${p.id})">Ajouter au panier</button>
-                        <button class="${favBtnClass}" onclick="toggleFavorite(${p.id})">${favBtnText}</button>
+                        <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite(${p.id})">${isFav ? '❤️ Favoris' : '🤍 Favoris'}</button>
                         ${deleteBtn}
-                    </div>
-                `;
-                grid.innerHTML += cardHTML;
-            });
-
-            let promos = products.filter(p => p.hasPromo);
-            if (promos.length === 0) promos = products.slice(0, 2);
-            
-            promos.slice(0, 2).forEach((p) => {
-                promoGrid.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.image}" alt="${p.name}">
-                        <h3>${p.name}</h3>
-                        <p class="category-tag">EN PROMO (${p.promoText || 'Spécial'})</p>
-                        <div class="price-container">
-                            <span class="old-price">${p.price} €</span>
-                            <span class="price" style="color:#ff4757;">${p.finalPrice} €</span>
-                        </div>
-                        <button onclick="addToCart(${p.id})">Ajouter au panier</button>
                     </div>
                 `;
             });
@@ -969,51 +805,29 @@
             let promoVal = parseFloat(document.getElementById('promoValue').value) || 0;
             let imageInput = document.getElementById('pImage');
 
-            if (!name || isNaN(price) || !desc) {
-                alert("Remplis le nom, un prix valide et la description !");
-                return;
-            }
+            if (!name || isNaN(price) || !desc) return alert("Remplis tous les champs obligatoires !");
 
             let finalPrice = price;
             let hasPromo = false;
             let promoText = "";
-
             if (promoType === 'percent' && promoVal > 0) {
                 finalPrice = price - (price * promoVal / 100);
                 hasPromo = true;
-                promoText = "-" + promoVal + "%";
             } else if (promoType === 'euro' && promoVal > 0) {
                 finalPrice = price - promoVal;
-                if (finalPrice < 0) finalPrice = 0;
                 hasPromo = true;
-                promoText = "-" + promoVal + "€";
             }
 
-            finalPrice = parseFloat(finalPrice.toFixed(2));
-            let uniqueId = Date.now();
-
             let saveNewItem = (imgData) => {
-                let newProd = {
-                    id: uniqueId,
-                    name,
-                    price,
-                    finalPrice,
-                    category,
-                    desc,
-                    image: imgData,
-                    hasPromo,
-                    promoText
-                };
-                products.push(newProd);
+                products.push({ id: Date.now(), name, price, finalPrice: parseFloat(finalPrice.toFixed(2)), category, desc, image: imgData, hasPromo, promoText });
                 localStorage.setItem('arkbern_products', JSON.stringify(products));
                 displayProducts();
-                clearForm();
-                alert("✔ Article publié avec succès !");
+                alert("✔ Article publié !");
             };
 
             if (imageInput.files && imageInput.files[0]) {
                 let reader = new FileReader();
-                reader.onload = function(e) { saveNewItem(e.target.result); };
+                reader.onload = e => saveNewItem(e.target.result);
                 reader.readAsDataURL(imageInput.files[0]);
             } else {
                 saveNewItem("https://via.placeholder.com/220x140?text=Article");
@@ -1022,73 +836,36 @@
 
         function deleteProduct(id) {
             products = products.filter(p => p.id !== id);
-            favorites = favorites.filter(favId => favId !== id);
+            favorites = favorites.filter(f => f !== id);
             localStorage.setItem('arkbern_products', JSON.stringify(products));
             localStorage.setItem('arkbern_favorites', JSON.stringify(favorites));
             displayProducts();
         }
 
-        function clearForm() {
-            document.getElementById('pName').value = "";
-            document.getElementById('pPrice').value = "";
-            document.getElementById('pDesc').value = "";
-            document.getElementById('promoValue').value = "";
-            document.getElementById('pImage').value = "";
-            document.getElementById('promoType').value = "none";
-        }
-
         function filterProducts() {
             let searchVal = document.getElementById('searchBar').value.toLowerCase();
             let catVal = document.getElementById('categoryFilter').value;
-
             let filtered = products.filter(p => {
                 let matchesSearch = p.name.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
-                let matchesCat = true;
-
-                if (catVal === 'favoris') {
-                    matchesCat = favorites.includes(p.id);
-                } else if (catVal !== 'all') {
-                    matchesCat = (p.category === catVal);
-                }
+                let matchesCat = catVal === 'all' ? true : (catVal === 'favoris' ? favorites.includes(p.id) : p.category === catVal);
                 return matchesSearch && matchesCat;
             });
-
             displayProducts(filtered);
         }
 
         function displayCoupons() {
             let container = document.getElementById('couponsListContainer');
             container.innerHTML = "";
-            let isAdmin = currentUser && currentUser.email === "kelanbernard9@gmail.com";
-
             coupons.forEach((c, index) => {
-                let deleteAction = isAdmin ? `<button class="btn-delete" onclick="deleteCoupon(${index})">Supprimer</button>` : '';
-                container.innerHTML += `
-                    <div class="coupon-item">
-                        <div><strong>${c.code}</strong> : ${c.desc}</div>
-                        ${deleteAction}
-                    </div>
-                `;
+                container.innerHTML += `<div class="coupon-item"><div><strong>${c.code}</strong> : ${c.desc}</div></div>`;
             });
         }
 
         function addCoupon() {
             let code = document.getElementById('newCouponCode').value.trim().toUpperCase();
             let desc = document.getElementById('newCouponDesc').value.trim();
-
-            if (!code || !desc) {
-                alert("Remplis le code et la description !");
-                return;
-            }
+            if (!code || !desc) return;
             coupons.push({ code, desc });
-            localStorage.setItem('arkbern_coupons', JSON.stringify(coupons));
-            document.getElementById('newCouponCode').value = "";
-            document.getElementById('newCouponDesc').value = "";
-            displayCoupons();
-        }
-
-        function deleteCoupon(index) {
-            coupons.splice(index, 1);
             localStorage.setItem('arkbern_coupons', JSON.stringify(coupons));
             displayCoupons();
         }
@@ -1096,14 +873,12 @@
         function applyCoupon() {
             let code = document.getElementById('couponInput').value.trim().toUpperCase();
             let msg = document.getElementById('couponMsg');
-            let found = coupons.some(c => c.code === code);
-
-            if (found) {
+            if (coupons.some(c => c.code === code)) {
                 msg.style.color = "#2ed573";
-                msg.innerText = "✔ Code '" + code + "' appliqué avec succès !";
+                msg.innerText = "✔ Code appliqué !";
             } else {
                 msg.style.color = "#ff4757";
-                msg.innerText = "❌ Code promo invalide.";
+                msg.innerText = "❌ Code invalide.";
             }
         }
 
