@@ -8,20 +8,65 @@
 </head>
 <body>
 
-    <header>
-        <h1>ARKBERN SHOP</h1>
-        <p>Bienvenue sur la boutique officielle !</p>
+    <!-- Bandeau d'information défilant -->
+    <div class="top-banner">
+        <marquee scrollamount="5">🔥 Bienvenue sur ARKBERN SHOP ! - Livraison rapide - Paiement 100% sécurisé - Profitez de nos nouveautés ! 🔥</marquee>
+    </div>
+
+    <!-- Barre de navigation -->
+    <header class="navbar">
+        <div class="logo">ARKBERN SHOP</div>
+        <nav>
+            <a href="#presentation">Présentation</a>
+            <a href="#shop">Boutique</a>
+        </nav>
     </header>
 
-    <main>
-        <section class="products">
-            <div class="product-card">
-                <h3>Objet Exemple</h3>
-                <p>Prix : 15,00 €</p>
+    <!-- Page de Présentation -->
+    <section id="presentation" class="hero-section">
+        <h1>Bienvenue dans le futur de la boutique en ligne</h1>
+        <p>ARKBERN SHOP est ta nouvelle destination incontournable pour retrouver les meilleurs objets, des vêtements stylés aux équipements high-tech. Qualité, rapidité et fiabilité au rendez-vous !</p>
+    </section>
+
+    <!-- Section Boutique avec recherche et catégories -->
+    <section id="shop" class="shop-section">
+        <h2>Notre Boutique</h2>
+        
+        <!-- Barre de recherche et filtres par catégories -->
+        <div class="shop-controls">
+            <input type="text" id="searchBar" placeholder="Rechercher un objet...">
+            <select id="categoryFilter">
+                <option value="all">Toutes les catégories</option>
+                <option value="electronique">Électronique</option>
+                <option value="vetement">Vêtements</option>
+                <option value="accessoire">Accessoires</option>
+            </select>
+        </div>
+
+        <!-- Grille des produits -->
+        <div class="products-grid">
+            <div class="product-card" data-category="electronique">
+                <h3>Casque Gaming Pro</h3>
+                <p class="category-tag">Électronique</p>
+                <p class="price">49,99 €</p>
                 <button>Acheter</button>
             </div>
-        </section>
-    </main>
+
+            <div class="product-card" data-category="vetement">
+                <h3>Sweat ARKBERN</h3>
+                <p class="category-tag">Vêtements</p>
+                <p class="price">35,00 €</p>
+                <button>Acheter</button>
+            </div>
+
+            <div class="product-card" data-category="accessoire">
+                <h3>Stylo Connecté</h3>
+                <p class="category-tag">Accessoires</p>
+                <p class="price">15,99 €</p>
+                <button>Acheter</button>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>
