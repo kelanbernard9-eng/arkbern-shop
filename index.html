@@ -462,20 +462,10 @@
     </div>
 
     <script>
-        const CURRENT_VERSION = "v3.0";
-        if (localStorage.getItem('arkbern_version') !== CURRENT_VERSION) {
-            localStorage.removeItem('arkbern_products');
-            localStorage.removeItem('arkbern_coupons');
-            localStorage.setItem('arkbern_version', CURRENT_VERSION);
-        }
+        const BIN_ID = "6aaad151ac6210605ad570c5";
+        const MASTER_KEY = "$2a$10$llqFyCR2WCIePUVoVNNyBufep.qYXoFyvrzd1Tsq50jdg550djv7C";
 
-        function switchPage(pageId) {
-            let pages = document.querySelectorAll('.page-content');
-            pages.forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
-
-        let products = JSON.parse(localStorage.getItem('arkbern_products')) || [];
+        let products = [];
         let favorites = JSON.parse(localStorage.getItem('arkbern_favorites')) || [];
         let cart = JSON.parse(localStorage.getItem('arkbern_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('arkbern_orders')) || [];
@@ -488,6 +478,42 @@
         let adminEarningsVal = parseFloat(localStorage.getItem('arkbern_admin_earnings')) || 0;
         let currentUser = JSON.parse(localStorage.getItem('arkbern_current_user')) || null;
         let activeChatOrderId = null;
+
+        // Charger les produits depuis JSONBin au démarrage
+        async function fetchProductsFromCloud() {
+            try {
+                let response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                let data = await response.json();
+                products = data.record.products || [];
+                displayProducts();
+            } catch (e) {
+                console.error("Erreur de chargement cloud", e);
+            }
+        }
+
+        // Sauvegarder les produits sur JSONBin
+        async function saveProductsToCloud() {
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify({ products: products })
+                });
+            } catch (e) {
+                console.error("Erreur de sauvegarde cloud", e);
+            }
+        }
+
+        function switchPage(pageId) {
+            let pages = document.querySelectorAll('.page-content');
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
 
         function updateAuthUI() {
             let adminBox = document.getElementById('adminContainer');
@@ -514,7 +540,6 @@
                 profileSection.style.display = 'none';
                 adminBox.style.display = 'none';
             }
-            displayProducts();
             displayCoupons();
             displayCart();
             displayOrders();
@@ -796,7 +821,7 @@
             });
         }
 
-        function addProduct() {
+        async function addProduct() {
             let name = document.getElementById('pName').value.trim();
             let price = parseFloat(document.getElementById('pPrice').value);
             let category = document.getElementById('pCategory').value;
@@ -818,11 +843,11 @@
                 hasPromo = true;
             }
 
-            let saveNewItem = (imgData) => {
+            let saveNewItem = async (imgData) => {
                 products.push({ id: Date.now(), name, price, finalPrice: parseFloat(finalPrice.toFixed(2)), category, desc, image: imgData, hasPromo, promoText });
-                localStorage.setItem('arkbern_products', JSON.stringify(products));
+                await saveProductsToCloud();
                 displayProducts();
-                alert("✔ Article publié !");
+                alert("✔ Article publié et synchronisé !");
             };
 
             if (imageInput.files && imageInput.files[0]) {
@@ -834,11 +859,11 @@
             }
         }
 
-        function deleteProduct(id) {
+        async function deleteProduct(id) {
             products = products.filter(p => p.id !== id);
             favorites = favorites.filter(f => f !== id);
-            localStorage.setItem('arkbern_products', JSON.stringify(products));
             localStorage.setItem('arkbern_favorites', JSON.stringify(favorites));
+            await saveProductsToCloud();
             displayProducts();
         }
 
@@ -883,6 +908,7 @@
         }
 
         updateAuthUI();
+        fetchProductsFromCloud();
     </script>
 </body>
 </html>
